@@ -643,3 +643,51 @@
 .security-details div:last-child {
     margin-bottom: 0;
 }
+
+/* Token复制功能样式 */
+.param-value-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+}
+
+.param-value-container .param-value {
+    flex: 1;
+}
+
+.copy-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    min-width: 60px;
+    height: fit-content;
+    margin-top: var(--spacing-1);
+}
+
+.copy-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn.copied {
+    background: var(--success-color);
+    animation: copySuccess 0.3s ease;
+}
+
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

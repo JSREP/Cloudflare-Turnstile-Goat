@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="css/cloudflare-debug.css">
+    <link rel="stylesheet" href="css/token-display.css">
     <!-- 加载 Turnstile JS 脚本 -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
@@ -106,15 +107,7 @@
             <section class="analysis-section">
                 <div class="analysis-container">
                     <div class="analysis-info">
-                        <div class="info-card">
-                            <h3>关于 Turnstile</h3>
-                            <ul class="info-list">
-                                <li>✅ 无需点击图片验证</li>
-                                <li>✅ 更好的用户体验</li>
-                                <li>✅ 强大的安全防护</li>
-                                <li>✅ 支持多种主题</li>
-                            </ul>
-                        </div>
+
 
                         <div class="info-card">
                             <h3>验证状态</h3>
@@ -127,9 +120,12 @@
                                     <span class="status-label">验证时间:</span>
                                     <span class="status-value" id="verifyTime">-</span>
                                 </div>
-                                <div class="status-item">
+                                <div class="status-item token-status-item">
                                     <span class="status-label">Token:</span>
-                                    <span class="status-value" id="tokenPreview">-</span>
+                                    <div class="token-display-container">
+                                        <div class="status-value token-full-display" id="tokenPreview">-</div>
+                                        <button class="copy-btn copy-btn-small" id="copyTokenPreviewBtn" onclick="copyTokenPreview()" title="复制Token">📋</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,7 +137,10 @@
                                 <h4>🔍 Turnstile Token 分析</h4>
                                 <div class="param-item">
                                     <span class="param-label">完整Token:</span>
-                                    <div class="param-value code-block" id="fullToken">等待验证...</div>
+                                    <div class="param-value-container">
+                                        <div class="param-value code-block" id="fullToken">等待验证...</div>
+                                        <button class="copy-btn" id="copyTokenBtn" onclick="copyToken()" title="复制Token">📋 复制</button>
+                                    </div>
                                 </div>
                                 <div class="param-item">
                                     <span class="param-label">Token长度:</span>

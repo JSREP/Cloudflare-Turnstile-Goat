@@ -384,8 +384,14 @@ class LoginManager {
     updateTokenPreview(token) {
         const tokenElement = document.getElementById('tokenPreview');
         if (tokenElement) {
-            tokenElement.textContent = Utils.truncateText(token, 30);
-            tokenElement.title = token; // 完整token作为tooltip
+            // 显示完整Token而不是截断
+            if (token && token !== '-') {
+                tokenElement.textContent = token;
+                tokenElement.title = token; // 完整token作为tooltip
+            } else {
+                tokenElement.textContent = token || '-';
+                tokenElement.title = '';
+            }
         }
     }
 
@@ -958,6 +964,166 @@ window.onTurnstileError = function(error) {
 window.onTurnstileExpired = function() {
     if (window.loginManager) {
         window.loginManager.onTurnstileExpired();
+    }
+};
+
+// 复制Token预览到剪贴板的全局函数
+window.copyTokenPreview = function() {
+    const tokenElement = document.getElementById('tokenPreview');
+    const copyBtn = document.getElementById('copyTokenPreviewBtn');
+
+    if (!tokenElement || !copyBtn) {
+        console.error('Token预览元素或复制按钮未找到');
+        return;
+    }
+
+    // 获取token文本内容
+    const tokenText = tokenElement.textContent.trim();
+
+    // 如果token为空或是默认文本，不执行复制
+    if (!tokenText || tokenText === '-' || tokenText === '未验证') {
+        Utils.showNotification('暂无可复制的Token', 'warning', 3000);
+        return;
+    }
+
+    // 使用现代剪贴板API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(tokenText).then(() => {
+            // 复制成功的视觉反馈
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅';
+            copyBtn.classList.add('copied');
+
+            // 显示成功通知
+            Utils.showNotification('Token已复制到剪贴板', 'success', 3000);
+
+            // 恢复按钮状态
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('复制失败:', err);
+            Utils.showNotification('复制失败，请手动选择复制', 'error', 5000);
+        });
+    } else {
+        // 降级方案：使用传统的document.execCommand
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = tokenText;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            if (successful) {
+                // 复制成功的视觉反馈
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅';
+                copyBtn.classList.add('copied');
+
+                Utils.showNotification('Token已复制到剪贴板', 'success', 3000);
+
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } else {
+                throw new Error('execCommand复制失败');
+            }
+        } catch (err) {
+            console.error('复制失败:', err);
+            Utils.showNotification('复制失败，请手动选择复制', 'error', 5000);
+        }
+    }
+};
+
+// 复制Token到剪贴板的全局函数
+window.copyToken = function() {
+    const fullTokenElement = document.getElementById('fullToken');
+    const copyBtn = document.getElementById('copyTokenBtn');
+
+    if (!fullTokenElement || !copyBtn) {
+        console.error('Token元素或复制按钮未找到');
+        return;
+    }
+
+    // 获取token文本内容
+    let tokenText = '';
+
+    // 检查是否是测试token的特殊HTML结构
+    const testTokenDiv = fullTokenElement.querySelector('.token-value');
+    if (testTokenDiv) {
+        tokenText = testTokenDiv.textContent.trim();
+    } else {
+        tokenText = fullTokenElement.textContent.trim();
+    }
+
+    // 如果token为空或是默认文本，不执行复制
+    if (!tokenText || tokenText === '等待验证...' || tokenText === '-') {
+        Utils.showNotification('暂无可复制的Token', 'warning', 3000);
+        return;
+    }
+
+    // 使用现代剪贴板API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(tokenText).then(() => {
+            // 复制成功的视觉反馈
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ 已复制';
+            copyBtn.classList.add('copied');
+
+            // 显示成功通知
+            Utils.showNotification('Token已复制到剪贴板', 'success', 3000);
+
+            // 恢复按钮状态
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('复制失败:', err);
+            Utils.showNotification('复制失败，请手动选择复制', 'error', 5000);
+        });
+    } else {
+        // 降级方案：使用传统的document.execCommand
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = tokenText;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            if (successful) {
+                // 复制成功的视觉反馈
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ 已复制';
+                copyBtn.classList.add('copied');
+
+                Utils.showNotification('Token已复制到剪贴板', 'success', 3000);
+
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } else {
+                throw new Error('execCommand复制失败');
+            }
+        } catch (err) {
+            console.error('复制失败:', err);
+            Utils.showNotification('复制失败，请手动选择复制', 'error', 5000);
+        }
     }
 };
 
