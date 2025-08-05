@@ -60,7 +60,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
+            type=sha,prefix=main-
           labels: |
             org.opencontainers.image.title=Cloudflare Turnstile Goat
             org.opencontainers.image.description=A demonstration application for Cloudflare Turnstile integration
