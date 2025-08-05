@@ -146,7 +146,15 @@ class LoginManager {
      * Turnstile验证成功回调
      */
     onTurnstileSuccess(token) {
-        console.log('Turnstile验证成功，Token:', token);
+        // 检查是否为测试Token
+        const isTestToken = token && (token === 'XXXX.DUMMY.TOKEN.XXXX' || token.includes('DUMMY'));
+
+        if (isTestToken) {
+            console.log('Turnstile验证成功，收到测试Token:', token);
+            console.log('📝 说明：这是Cloudflare测试Site Key返回的假Token，在生产环境中会返回真实Token');
+        } else {
+            console.log('Turnstile验证成功，Token:', token);
+        }
 
         this.turnstileToken = token;
         this.updateTurnstileStatus('验证成功', 'success');
@@ -159,7 +167,8 @@ class LoginManager {
         // 清除Turnstile错误
         this.clearTurnstileError();
 
-        Utils.showNotification('人机验证成功', 'success', 3000);
+        const message = isTestToken ? '人机验证成功（测试模式）' : '人机验证成功';
+        Utils.showNotification(message, 'success', 3000);
     }
 
     /**
@@ -411,6 +420,65 @@ class LoginManager {
     }
 
     /**
+     * 更新Token安全性分析
+     */
+    updateTokenSecurityAnalysis(token, isTestToken) {
+        const securityElement = document.getElementById('tokenSecurity');
+        if (!securityElement || !token) return;
+
+        if (isTestToken) {
+            securityElement.innerHTML = `
+                <div class="security-warning">
+                    <span class="security-level-test">测试环境</span>
+                    <div class="security-explanation">
+                        ⚠️ 这是测试Token，不包含真实的安全信息<br>
+                        在生产环境中，Token会包含加密签名和时间戳等安全特性
+                    </div>
+                </div>
+            `;
+        } else {
+            const parts = token.split('.');
+            let securityLevel = 'unknown';
+            let securityDetails = [];
+
+            if (parts.length === 3) {
+                securityLevel = 'high';
+                securityDetails.push('✅ JWT格式，包含Header、Payload、Signature三部分');
+                securityDetails.push('✅ 使用加密签名验证Token完整性');
+
+                // 尝试分析Payload中的时间信息
+                try {
+                    const payload = JSON.parse(atob(parts[1]));
+                    if (payload.exp) {
+                        const expDate = new Date(payload.exp * 1000);
+                        securityDetails.push(`⏰ 过期时间: ${expDate.toLocaleString('zh-CN')}`);
+                    }
+                    if (payload.iat) {
+                        const iatDate = new Date(payload.iat * 1000);
+                        securityDetails.push(`📅 签发时间: ${iatDate.toLocaleString('zh-CN')}`);
+                    }
+                } catch (e) {
+                    securityDetails.push('⚠️ Payload解析失败，可能使用了加密');
+                }
+            } else {
+                securityLevel = 'medium';
+                securityDetails.push('⚠️ 非标准JWT格式');
+                securityDetails.push('🔍 需要进一步验证Token结构');
+            }
+
+            const securityClass = securityLevel === 'high' ? 'security-level-high' : 'security-level-medium';
+            securityElement.innerHTML = `
+                <div class="security-info">
+                    <span class="${securityClass}">${securityLevel === 'high' ? '高安全性' : '中等安全性'}</span>
+                    <div class="security-details">
+                        ${securityDetails.map(detail => `<div>${detail}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    /**
      * 更新配置信息显示
      */
     updateConfigDisplay() {
@@ -460,15 +528,29 @@ class LoginManager {
      * 更新验证参数显示
      */
     updateVerificationParams(token, verificationData = null) {
+        // 检查是否为测试Token
+        const isTestToken = token && (token === 'XXXX.DUMMY.TOKEN.XXXX' || token.includes('DUMMY'));
+
         // 更新Token相关信息
         const fullTokenElement = document.getElementById('fullToken');
         if (fullTokenElement && token) {
-            fullTokenElement.textContent = token;
+            if (isTestToken) {
+                fullTokenElement.innerHTML = `
+                    <div class="test-token-warning">
+                        <div class="token-value">${token}</div>
+                        <div class="token-notice">⚠️ 这是测试Token（使用测试Site Key）</div>
+                        <div class="token-explanation">在生产环境中，这里会显示真实的Turnstile Token</div>
+                    </div>
+                `;
+            } else {
+                fullTokenElement.textContent = token;
+            }
         }
 
         const tokenLengthElement = document.getElementById('tokenLength');
         if (tokenLengthElement && token) {
-            tokenLengthElement.textContent = `${token.length} 字符`;
+            const lengthText = `${token.length} 字符`;
+            tokenLengthElement.textContent = isTestToken ? `${lengthText} (测试Token)` : lengthText;
         }
 
         const tokenPrefixElement = document.getElementById('tokenPrefix');
@@ -476,6 +558,49 @@ class LoginManager {
             const prefix = token.substring(0, 20) + '...';
             tokenPrefixElement.textContent = prefix;
         }
+
+        // 添加Token类型分析
+        const tokenTypeElement = document.getElementById('tokenType');
+        if (tokenTypeElement && token) {
+            if (isTestToken) {
+                tokenTypeElement.innerHTML = `
+                    <span class="token-type-test">测试Token</span>
+                    <div class="token-type-explanation">
+                        使用Cloudflare测试Site Key (1x00000000000000000000AA) 时返回的固定测试Token
+                    </div>
+                `;
+            } else {
+                // 分析真实Token的结构
+                const parts = token.split('.');
+                if (parts.length === 3) {
+                    // 尝试解析JWT Header
+                    let headerInfo = '';
+                    try {
+                        const header = JSON.parse(atob(parts[0]));
+                        headerInfo = `<br><small>算法: ${header.alg || 'unknown'}, 类型: ${header.typ || 'unknown'}</small>`;
+                    } catch (e) {
+                        headerInfo = '<br><small>Header解析失败</small>';
+                    }
+
+                    tokenTypeElement.innerHTML = `
+                        <span class="token-type-real">JWT格式Token</span>
+                        <div class="token-type-explanation">
+                            标准的JWT格式：Header.Payload.Signature (${parts[0].length}.${parts[1].length}.${parts[2].length})${headerInfo}
+                        </div>
+                    `;
+                } else {
+                    tokenTypeElement.innerHTML = `
+                        <span class="token-type-unknown">未知格式Token</span>
+                        <div class="token-type-explanation">
+                            Token格式：${parts.length}个部分，长度：${token.length}字符
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // 添加Token安全性分析
+        this.updateTokenSecurityAnalysis(token, isTestToken);
 
         // 如果有验证响应数据，更新相关字段
         if (verificationData) {

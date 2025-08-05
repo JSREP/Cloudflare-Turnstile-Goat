@@ -591,3 +591,55 @@
     line-height: 1.3;
     font-style: italic;
 }
+
+/* Token安全性分析样式 */
+.security-info,
+.security-warning {
+    margin-top: var(--spacing-2);
+}
+
+.security-level-high {
+    background-color: var(--success-color);
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.security-level-medium {
+    background-color: var(--warning-color);
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.security-level-test {
+    background-color: var(--gray-500);
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.security-details,
+.security-explanation {
+    font-size: var(--font-size-xs);
+    color: var(--gray-600);
+    margin-top: var(--spacing-1);
+    line-height: 1.4;
+}
+
+.security-details div {
+    margin-bottom: var(--spacing-05);
+}
+
+.security-details div:last-child {
+    margin-bottom: 0;
+}
