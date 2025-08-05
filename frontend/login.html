@@ -33,12 +33,13 @@
                     <form id="loginForm" class="login-form" action="/api/login" method="POST">
                         <div class="form-group">
                             <label for="username" class="form-label">用户名</label>
-                            <input 
-                                type="text" 
-                                id="username" 
-                                name="username" 
-                                class="form-input" 
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-input"
                                 placeholder="请输入用户名"
+                                value="admin"
                                 required
                                 autocomplete="username"
                             >
@@ -47,12 +48,13 @@
 
                         <div class="form-group">
                             <label for="password" class="form-label">密码</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                class="form-input" 
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-input"
                                 placeholder="请输入密码"
+                                value="password"
                                 required
                                 autocomplete="current-password"
                             >
@@ -89,9 +91,10 @@
 
                     <div class="login-footer">
                         <div class="demo-info">
-                            <h4>演示账号</h4>
-                            <p>用户名: <code>admin</code></p>
-                            <p>密码: <code>password</code></p>
+                            <h4>演示账号（已自动填充）</h4>
+                            <p>用户名: <code>admin</code> ✅</p>
+                            <p>密码: <code>password</code> ✅</p>
+                            <p class="demo-tip">💡 专注体验Turnstile验证即可</p>
                         </div>
                     </div>
                 </div>

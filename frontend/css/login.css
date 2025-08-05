@@ -136,6 +136,17 @@
     font-weight: 600;
 }
 
+.demo-tip {
+    font-size: var(--font-size-sm);
+    color: var(--success-color);
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-3);
+    background-color: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--success-color);
+    font-weight: 500;
+}
+
 /* 登录信息面板 - 重复原则：统一的信息卡片样式 */
 .login-info {
     display: flex;
