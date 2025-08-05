@@ -231,6 +231,22 @@
     font-size: var(--font-size-sm);
     white-space: pre-wrap;
     overflow-x: auto;
+    margin-bottom: var(--spacing-3);
+}
+
+.result-data h4 {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.result-data:last-child {
+    margin-bottom: 0;
 }
 
 /* 状态指示器增强 */
@@ -250,6 +266,66 @@
     background-color: rgba(245, 158, 11, 0.1);
     color: var(--warning-color);
     border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* 验证参数详情样式 */
+.params-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.param-group {
+    background-color: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    border: 1px solid var(--gray-200);
+}
+
+.param-group h4 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-3);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.param-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-3);
+}
+
+.param-item:last-child {
+    margin-bottom: 0;
+}
+
+.param-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.param-value {
+    font-size: var(--font-size-sm);
+    color: var(--gray-800);
+    background-color: var(--white);
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+    word-break: break-all;
+}
+
+.param-value.code-block {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    background-color: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    max-height: 100px;
+    overflow-y: auto;
+    white-space: pre-wrap;
 }
 
 /* 动画效果 */
@@ -323,5 +399,22 @@
     .login-form .btn-primary {
         padding: var(--spacing-3) var(--spacing-4);
         font-size: var(--font-size-base);
+    }
+
+    .params-container {
+        gap: var(--spacing-4);
+    }
+
+    .param-group {
+        padding: var(--spacing-3);
+    }
+
+    .param-group h4 {
+        font-size: var(--font-size-sm);
+    }
+
+    .param-value.code-block {
+        max-height: 80px;
+        font-size: var(--font-size-xs);
     }
 }

@@ -114,7 +114,10 @@ class LoginManager {
             
             console.log('Turnstile组件渲染成功，Widget ID:', this.turnstileWidgetId);
             this.updateTurnstileStatus('已加载', 'pending');
-            
+
+            // 更新配置信息显示
+            this.updateConfigDisplay();
+
         } catch (error) {
             console.error('Turnstile渲染失败:', error);
             this.updateTurnstileStatus('加载失败', 'error');
@@ -127,15 +130,18 @@ class LoginManager {
      */
     onTurnstileSuccess(token) {
         console.log('Turnstile验证成功，Token:', token);
-        
+
         this.turnstileToken = token;
         this.updateTurnstileStatus('验证成功', 'success');
         this.updateVerifyTime(new Date().toISOString());
         this.updateTokenPreview(token);
-        
+
+        // 更新验证参数显示
+        this.updateVerificationParams(token);
+
         // 清除Turnstile错误
         this.clearTurnstileError();
-        
+
         Utils.showNotification('人机验证成功', 'success', 3000);
     }
 
@@ -233,13 +239,24 @@ class LoginManager {
             const result = await Utils.post(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.LOGIN}`, loginData);
             
             console.log('登录成功:', result);
-            
+
+            // 更新验证参数显示（如果有验证数据）
+            if (result.data && result.data.challenge_ts) {
+                this.updateVerificationParams(this.turnstileToken, result.data);
+            }
+
             // 显示成功结果
             this.showResult({
                 success: true,
                 title: '登录成功',
                 message: result.message,
-                data: result.data
+                data: result.data,
+                verificationParams: {
+                    token: this.turnstileToken,
+                    siteKey: CONFIG.TURNSTILE.siteKey,
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toISOString()
+                }
             });
 
             Utils.showNotification('登录成功！', 'success');
@@ -367,6 +384,98 @@ class LoginManager {
     }
 
     /**
+     * 更新配置信息显示
+     */
+    updateConfigDisplay() {
+        // 更新Site Key显示
+        const siteKeyElement = document.getElementById('siteKeyDisplay');
+        if (siteKeyElement) {
+            siteKeyElement.textContent = CONFIG.TURNSTILE.siteKey;
+        }
+
+        // 更新主题和大小
+        const themeModeElement = document.getElementById('themeMode');
+        if (themeModeElement) {
+            themeModeElement.textContent = CONFIG.TURNSTILE.theme;
+        }
+
+        const widgetSizeElement = document.getElementById('widgetSize');
+        if (widgetSizeElement) {
+            widgetSizeElement.textContent = CONFIG.TURNSTILE.size;
+        }
+
+        // 更新用户代理
+        const userAgentElement = document.getElementById('userAgent');
+        if (userAgentElement) {
+            userAgentElement.textContent = navigator.userAgent;
+        }
+
+        // 获取用户IP（通过后端API）
+        this.updateUserIP();
+    }
+
+    /**
+     * 更新用户IP显示
+     */
+    async updateUserIP() {
+        try {
+            // 可以通过一个简单的API获取用户IP，这里先显示本地信息
+            const userIPElement = document.getElementById('userIP');
+            if (userIPElement) {
+                userIPElement.textContent = '127.0.0.1 (本地测试)';
+            }
+        } catch (error) {
+            console.error('获取用户IP失败:', error);
+        }
+    }
+
+    /**
+     * 更新验证参数显示
+     */
+    updateVerificationParams(token, verificationData = null) {
+        // 更新Token相关信息
+        const fullTokenElement = document.getElementById('fullToken');
+        if (fullTokenElement && token) {
+            fullTokenElement.textContent = token;
+        }
+
+        const tokenLengthElement = document.getElementById('tokenLength');
+        if (tokenLengthElement && token) {
+            tokenLengthElement.textContent = `${token.length} 字符`;
+        }
+
+        const tokenPrefixElement = document.getElementById('tokenPrefix');
+        if (tokenPrefixElement && token) {
+            const prefix = token.substring(0, 20) + '...';
+            tokenPrefixElement.textContent = prefix;
+        }
+
+        // 如果有验证响应数据，更新相关字段
+        if (verificationData) {
+            const challengeTimestampElement = document.getElementById('challengeTimestamp');
+            if (challengeTimestampElement && verificationData.challenge_ts) {
+                const timestamp = new Date(verificationData.challenge_ts);
+                challengeTimestampElement.textContent = timestamp.toLocaleString('zh-CN');
+            }
+
+            const verifyHostnameElement = document.getElementById('verifyHostname');
+            if (verifyHostnameElement && verificationData.hostname) {
+                verifyHostnameElement.textContent = verificationData.hostname;
+            }
+
+            const verifyActionElement = document.getElementById('verifyAction');
+            if (verifyActionElement && verificationData.action) {
+                verifyActionElement.textContent = verificationData.action;
+            }
+
+            const customDataElement = document.getElementById('customData');
+            if (customDataElement && verificationData.cdata) {
+                customDataElement.textContent = verificationData.cdata;
+            }
+        }
+    }
+
+    /**
      * 显示结果模态框
      */
     showResult(result) {
@@ -392,7 +501,17 @@ class LoginManager {
             if (result.data) {
                 contentHtml += `
                     <div class="result-data">
+                        <h4>🎯 登录响应数据:</h4>
                         ${JSON.stringify(result.data, null, 2)}
+                    </div>
+                `;
+            }
+
+            if (result.verificationParams) {
+                contentHtml += `
+                    <div class="result-data">
+                        <h4>🔍 验证参数详情:</h4>
+                        ${JSON.stringify(result.verificationParams, null, 2)}
                     </div>
                 `;
             }
