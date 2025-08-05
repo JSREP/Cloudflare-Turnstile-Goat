@@ -49,8 +49,23 @@ def create_app(config_name=None):
             'message': 'Cloudflare Turnstile Goat API',
             'version': '1.0.0',
             'endpoints': {
+                'config': '/api/config',
                 'login': '/api/login',
                 'verify': '/api/verify'
+            }
+        })
+
+    @app.route('/api/config')
+    def get_config():
+        """获取配置信息"""
+        return jsonify({
+            'success': True,
+            'data': {
+                'turnstile': {
+                    'site_key': app.config['TURNSTILE_SITE_KEY'],
+                    'theme': 'light',
+                    'size': 'normal'
+                }
             }
         })
     

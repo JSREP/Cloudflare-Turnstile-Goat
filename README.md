@@ -1,114 +1,140 @@
-# Cloudflare Turnstile Goat
+# 🔐 Cloudflare Turnstile Goat
 
-一个演示Cloudflare Turnstile人机验证功能的前后端应用。
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-https://cloudflare--turnstile.jsrei.org/-blue?style=for-the-badge)](https://cloudflare-turnstile.jsrei.org/)
+[![Docker Hub](https://img.shields.io/badge/🐳_Docker_Hub-jsreidockerhub/cloudflare--turnstile--goat-blue?style=for-the-badge)](https://hub.docker.com/r/jsreidockerhub/cloudflare-turnstile-goat)
+[![License](https://img.shields.io/badge/📄_License-MIT-green?style=for-the-badge)](LICENSE)
 
-## 项目简介
+> **🚀 [Try the Live Demo](https://cloudflare-turnstile.jsrei.org/)** - Experience Cloudflare Turnstile CAPTCHA integration in action!
 
-本项目是一个完整的Cloudflare Turnstile验证演示应用，包含：
-- 前端：纯原生HTML/CSS/JavaScript实现
-- 后端：Python Flask API
-- 功能：完整的Turnstile验证流程
+A comprehensive demonstration application showcasing **Cloudflare Turnstile CAPTCHA** integration with a complete web stack.
 
-## 功能特点
+## 🌟 Project Overview
 
-- ✅ **安全防护**: 有效防止机器人攻击和暴力破解
-- ✅ **用户体验**: 无需点击图片验证，一键完成验证
-- ✅ **易于集成**: 简单的API接口，几行代码即可集成
-- ✅ **实时监控**: 详细的验证日志和状态监控
+This project is a complete Cloudflare Turnstile verification demonstration application featuring:
+- **Frontend**: Pure vanilla HTML/CSS/JavaScript implementation
+- **Backend**: Python Flask API with robust validation
+- **Features**: Complete Turnstile verification workflow with interactive debug interface
 
-## 项目结构
+## ✨ Key Features
+
+- 🛡️ **Security Protection**: Effectively prevents bot attacks and brute force attempts
+- 🎯 **User Experience**: No image clicking required - one-click verification completion
+- 🔧 **Easy Integration**: Simple API interface, integrate with just a few lines of code
+- 📊 **Real-time Monitoring**: Detailed verification logs and status monitoring
+- 🐳 **Docker Ready**: Containerized application for easy deployment
+- 🌍 **Multi-Architecture**: Supports AMD64, ARM64, and more platforms
+
+## 🏗️ Project Structure
 
 ```
 Cloudflare-Turnstile-Goat/
-├── backend/                 # Python Flask后端
-│   ├── app.py              # 主应用文件
-│   ├── config.py           # 配置文件
-│   ├── requirements.txt    # Python依赖
-│   ├── .env                # 环境变量配置
+├── backend/                 # Python Flask backend
+│   ├── app.py              # Main application file
+│   ├── config.py           # Configuration file
+│   ├── requirements.txt    # Python dependencies
+│   ├── .env                # Environment variables
 │   └── utils/
-│       └── turnstile.py    # Turnstile验证工具
-├── frontend/               # 前端静态文件
-│   ├── index.html          # 主页面
-│   ├── login.html          # 登录页面
-│   ├── css/                # 样式文件
-│   │   ├── main.css        # 主样式
-│   │   ├── login.css       # 登录页面样式
-│   │   └── components.css  # 组件样式
-│   └── js/                 # JavaScript文件
-│       ├── main.js         # 主脚本
-│       └── login.js        # 登录页面脚本
-└── README.md               # 项目说明
+│       └── turnstile.py    # Turnstile verification utilities
+├── frontend/               # Frontend static files
+│   ├── index.html          # Main page
+│   ├── login.html          # Login page
+│   ├── css/                # Stylesheets
+│   │   ├── main.css        # Main styles
+│   │   ├── login.css       # Login page styles
+│   │   └── components.css  # Component styles
+│   └── js/                 # JavaScript files
+│       ├── main.js         # Main script
+│       └── login.js        # Login page script
+├── Dockerfile              # Docker configuration
+├── docker-compose.yml      # Docker Compose setup
+└── README.md               # Project documentation
 ```
 
-## 快速开始
+## 🚀 Quick Start
 
-### 1. 环境要求
-
-- Python 3.7+
-- 现代浏览器（支持ES6+）
-
-### 2. 安装依赖
+### Option 1: Docker (Recommended)
 
 ```bash
-# 进入后端目录
+# Pull and run the container
+docker run -p 59623:59623 jsreidockerhub/cloudflare-turnstile-goat:latest
+
+# Or with custom environment variables
+docker run -p 59623:59623 \
+  -e TURNSTILE_SITE_KEY=your_site_key \
+  -e TURNSTILE_SECRET_KEY=your_secret_key \
+  jsreidockerhub/cloudflare-turnstile-goat:latest
+```
+
+### Option 2: Local Development
+
+#### 1. Prerequisites
+
+- Python 3.11+
+- Modern browser (ES6+ support)
+
+#### 2. Install Dependencies
+
+```bash
+# Navigate to backend directory
 cd backend
 
-# 安装Python依赖
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-### 3. 配置环境变量
+#### 3. Configure Environment Variables
 
-复制环境变量模板：
+Copy the environment template:
 ```bash
 cp .env.example .env
 ```
 
-编辑 `.env` 文件，配置Turnstile密钥：
+Edit the `.env` file with your Turnstile keys:
 ```env
-# Cloudflare Turnstile配置
-TURNSTILE_SITE_KEY=你的_SITE_KEY
-TURNSTILE_SECRET_KEY=你的_SECRET_KEY
+# Cloudflare Turnstile Configuration
+TURNSTILE_SITE_KEY=your_site_key
+TURNSTILE_SECRET_KEY=your_secret_key
 ```
 
-> **注意**: 项目默认使用Cloudflare提供的测试密钥，适用于开发和演示。生产环境请替换为真实密钥。
+> **Note**: The project uses Cloudflare's test keys by default, suitable for development and demonstration. Replace with real keys for production.
 
-### 4. 启动应用
+#### 4. Start the Application
 
 ```bash
-# 启动后端服务
+# Start the backend service
 cd backend
 python app.py
 ```
 
-服务启动后，访问：
-- 主页: http://127.0.0.1:5000/frontend/index.html
-- 登录页: http://127.0.0.1:5000/frontend/login.html
+After startup, visit:
+- **Main Page**: http://127.0.0.1:59623/
+- **Login Page**: http://127.0.0.1:59623/login.html
 
-## 使用说明
+## 📖 Usage Guide
 
-### 演示账号
+### Demo Credentials
 
-- 用户名: `admin`
-- 密码: `password`
+- **Username**: `admin`
+- **Password**: `password`
 
-### 验证流程
+### Verification Workflow
 
-1. 访问登录页面
-2. 输入用户名和密码
-3. 完成Turnstile人机验证
-4. 点击登录按钮
-5. 查看验证结果
+1. Visit the login page
+2. Enter username and password
+3. Complete Turnstile CAPTCHA verification
+4. Click the login button
+5. View verification results and debug information
 
-## API接口
+## 🔌 API Endpoints
 
-### 获取配置
-```
+### Get Configuration
+```http
 GET /api/config
 ```
+Returns the Turnstile site key and configuration.
 
-### 验证Turnstile Token
-```
+### Verify Turnstile Token
+```http
 POST /api/verify
 Content-Type: application/json
 
@@ -117,8 +143,8 @@ Content-Type: application/json
 }
 ```
 
-### 用户登录
-```
+### User Login
+```http
 POST /api/login
 Content-Type: application/json
 
@@ -129,87 +155,109 @@ Content-Type: application/json
 }
 ```
 
-## Turnstile配置
+## ⚙️ Turnstile Configuration
 
-### 获取密钥
+### Getting Your Keys
 
-1. 访问 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. 选择你的域名
-3. 进入 "Security" > "Turnstile"
-4. 创建新的站点密钥
-5. 复制 Site Key 和 Secret Key
+1. Visit the [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Select your domain
+3. Navigate to "Security" > "Turnstile"
+4. Create a new site key
+5. Copy the Site Key and Secret Key
 
-### 测试密钥
+### Test Keys
 
-项目默认使用以下测试密钥：
-- Site Key: `1x00000000000000000000AA`
-- Secret Key: `1x0000000000000000000000000000000AA`
+The project uses the following test keys by default:
+- **Site Key**: `1x00000000000000000000AA`
+- **Secret Key**: `1x0000000000000000000000000000000AA`
 
-这些密钥仅用于开发和测试，会始终返回成功结果。
+These keys are for development and testing only and will always return successful results.
 
-## 开发说明
+## 🛠️ Development Guide
 
-### 前端架构
+### Frontend Architecture
 
-- **HTML**: 语义化结构，遵循Web标准
-- **CSS**: 模块化样式，遵循UI设计四原则
-- **JavaScript**: ES6+语法，模块化设计
+- **HTML**: Semantic structure following web standards
+- **CSS**: Modular styles following the four UI design principles
+- **JavaScript**: ES6+ syntax with modular design
 
-### 后端架构
+### Backend Architecture
 
-- **Flask**: 轻量级Web框架
-- **模块化**: 配置、工具类分离
-- **错误处理**: 完善的异常处理机制
-- **日志记录**: 详细的操作日志
+- **Flask**: Lightweight web framework
+- **Modular Design**: Separated configuration and utility classes
+- **Error Handling**: Comprehensive exception handling mechanisms
+- **Logging**: Detailed operation logs
 
-### UI设计原则
+### UI Design Principles
 
-1. **亲密性**: 相关元素放得近，无关元素分开排
-2. **对齐**: 所有元素要对齐，左中右都要整齐
-3. **重复**: 同样样式重复用，颜色字体要统一
-4. **对比**: 重要内容要突出，大小颜色差别大
+1. **Proximity**: Related elements close together, unrelated elements separated
+2. **Alignment**: All elements properly aligned, left, center, or right
+3. **Repetition**: Consistent styles, unified colors and fonts
+4. **Contrast**: Important content stands out with size and color differences
 
-## 安全考虑
+## 🔒 Security Considerations
 
-- ✅ 服务端验证Turnstile token
-- ✅ 用户IP地址验证
-- ✅ 请求超时处理
-- ✅ 错误信息脱敏
-- ✅ CORS安全配置
+- ✅ Server-side Turnstile token verification
+- ✅ User IP address validation
+- ✅ Request timeout handling
+- ✅ Error message sanitization
+- ✅ CORS security configuration
 
-## 故障排除
+## 🐛 Troubleshooting
 
-### 常见问题
+### Common Issues
 
-1. **Turnstile组件不显示**
-   - 检查网络连接
-   - 确认Site Key配置正确
-   - 查看浏览器控制台错误
+1. **Turnstile Widget Not Displaying**
+   - Check network connection
+   - Verify Site Key configuration
+   - Check browser console for errors
 
-2. **验证失败**
-   - 检查Secret Key配置
-   - 确认服务器时间正确
-   - 查看后端日志
+2. **Verification Failures**
+   - Check Secret Key configuration
+   - Ensure server time is correct
+   - Review backend logs
 
-3. **CORS错误**
-   - 检查CORS_ORIGINS配置
-   - 确认请求域名在允许列表中
+3. **CORS Errors**
+   - Check CORS_ORIGINS configuration
+   - Ensure request domain is in the allowlist
 
-### 调试模式
+### Debug Mode
 
-启用调试模式查看详细日志：
+Enable debug mode for detailed logs:
 ```env
 FLASK_DEBUG=true
 ```
 
-## 许可证
+## 🏗️ Supported Architectures
 
-MIT License
+The Docker image supports multiple architectures:
+- `linux/amd64` (Intel/AMD 64-bit)
+- `linux/arm64` (ARM 64-bit - Apple M1/M2, AWS Graviton, etc.)
+- `linux/arm/v7` (ARM 32-bit - Raspberry Pi 4, etc.)
+- `linux/arm/v6` (ARM 32-bit - Raspberry Pi Zero, etc.)
+- `linux/ppc64le` (PowerPC 64-bit Little Endian - IBM Power systems)
+- `linux/s390x` (IBM Z - IBM mainframe architecture)
 
-## 贡献
+## 📚 What You'll Learn
 
-欢迎提交Issue和Pull Request！
+- How to integrate Cloudflare Turnstile CAPTCHA
+- Backend API validation techniques
+- Frontend CAPTCHA handling
+- Security best practices for CAPTCHA implementation
+- Docker containerization for web applications
 
-## 联系方式
+## 📄 License
 
-如有问题，请通过GitHub Issues联系。
+MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit Issues and Pull Requests.
+
+## 📞 Contact
+
+If you have any questions, please contact us through GitHub Issues.
+
+---
+
+**[🌐 Try the Live Demo](https://cloudflare-turnstile.jsrei.org/)** | **[📖 中文文档](README_CN.md)**

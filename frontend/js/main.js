@@ -6,11 +6,12 @@
 const CONFIG = {
     API_BASE_URL: window.location.origin,
     ENDPOINTS: {
+        CONFIG: '/api/config',
         LOGIN: '/api/login',
         VERIFY: '/api/verify'
     },
     TURNSTILE: {
-        siteKey: '1x00000000000000000000AA',
+        siteKey: null, // 将从API动态获取
         theme: 'light',
         size: 'normal'
     }
@@ -304,6 +305,50 @@ class Utils {
             el.textContent = '';
         });
     }
+
+    /**
+     * 格式化JSON字符串
+     */
+    static formatJSON(obj) {
+        try {
+            return JSON.stringify(obj, null, 2);
+        } catch (error) {
+            console.error('JSON格式化失败:', error);
+            return String(obj);
+        }
+    }
+
+    /**
+     * JSON语法高亮
+     */
+    static highlightJSON(json) {
+        if (typeof json !== 'string') {
+            json = JSON.stringify(json, null, 2);
+        }
+
+        return json
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                    } else {
+                        cls = 'json-string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            })
+            .replace(/([{}])/g, '<span class="json-brace">$1</span>')
+            .replace(/([[\]])/g, '<span class="json-brace">$1</span>')
+            .replace(/([:,])/g, '<span class="json-punctuation">$1</span>');
+    }
 }
 
 // 应用初始化类
@@ -339,12 +384,30 @@ class App {
      * 加载应用配置
      */
     async loadConfig() {
-        // Site Key已经硬编码在CONFIG中，无需从API加载
-        console.log('配置已加载:', {
-            siteKey: CONFIG.TURNSTILE.siteKey,
-            theme: CONFIG.TURNSTILE.theme,
-            size: CONFIG.TURNSTILE.size
-        });
+        try {
+            console.log('正在从API加载配置...');
+            const response = await Utils.get(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.CONFIG}`);
+
+            if (response.success && response.data && response.data.turnstile) {
+                // 更新Turnstile配置
+                CONFIG.TURNSTILE.siteKey = response.data.turnstile.site_key;
+                CONFIG.TURNSTILE.theme = response.data.turnstile.theme || CONFIG.TURNSTILE.theme;
+                CONFIG.TURNSTILE.size = response.data.turnstile.size || CONFIG.TURNSTILE.size;
+
+                console.log('配置加载成功:', {
+                    siteKey: CONFIG.TURNSTILE.siteKey,
+                    theme: CONFIG.TURNSTILE.theme,
+                    size: CONFIG.TURNSTILE.size
+                });
+            } else {
+                throw new Error('配置响应格式错误');
+            }
+        } catch (error) {
+            console.error('配置加载失败:', error);
+            // 使用默认的测试配置作为回退
+            CONFIG.TURNSTILE.siteKey = '1x00000000000000000000AA';
+            console.warn('使用默认测试配置作为回退');
+        }
     }
 
     /**

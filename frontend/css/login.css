@@ -1,26 +1,38 @@
 /* 登录页面专用样式 - 遵循UI设计四原则 */
 
-/* 登录容器 - 亲密性原则：登录相关元素组合 */
+/* 登录区域 - 亲密性原则：登录相关元素组合在上部 */
+.login-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: var(--spacing-12) 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .login-container {
-    max-width: 1200px;
+    max-width: 500px;
+    width: 100%;
     margin: 0 auto;
-    padding: var(--spacing-8) var(--spacing-6);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-12);
-    align-items: start;
-    min-height: calc(100vh - 128px);
+    padding: 0 var(--spacing-6);
 }
 
 /* 登录卡片 - 对比原则：突出登录表单 */
 .login-card {
     background-color: var(--white);
     border-radius: var(--radius-2xl);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     padding: var(--spacing-10);
-    border: 1px solid var(--gray-200);
-    position: sticky;
-    top: var(--spacing-8);
+    border: none;
+    backdrop-filter: blur(10px);
+    position: relative;
+    transform: translateY(0);
+    transition: all var(--transition-normal);
+}
+
+.login-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
 }
 
 .login-header {
@@ -147,10 +159,22 @@
     font-weight: 500;
 }
 
-/* 登录信息面板 - 重复原则：统一的信息卡片样式 */
-.login-info {
-    display: flex;
-    flex-direction: column;
+/* 分析区域 - 重复原则：统一的信息卡片样式 */
+.analysis-section {
+    background-color: var(--gray-50);
+    padding: var(--spacing-12) 0;
+    min-height: 40vh;
+}
+
+.analysis-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+}
+
+.analysis-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: var(--spacing-6);
 }
 
@@ -344,61 +368,83 @@
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-    .login-container {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-8);
-        max-width: 600px;
+    .login-section {
+        min-height: 50vh;
+        padding: var(--spacing-10) 0;
     }
-    
-    .login-card {
-        position: static;
-    }
-    
-    .login-info {
-        order: -1;
+
+    .analysis-info {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-5);
     }
 }
 
 @media (max-width: 768px) {
-    .login-container {
-        padding: var(--spacing-6) var(--spacing-4);
-        gap: var(--spacing-6);
+    .login-section {
+        min-height: 45vh;
+        padding: var(--spacing-8) 0;
     }
-    
+
+    .login-container {
+        padding: 0 var(--spacing-4);
+    }
+
     .login-card {
         padding: var(--spacing-8);
         border-radius: var(--radius-xl);
     }
-    
+
     .login-title {
         font-size: var(--font-size-2xl);
     }
-    
+
+    .analysis-section {
+        padding: var(--spacing-8) 0;
+    }
+
+    .analysis-info {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+    }
+
     .info-card {
         padding: var(--spacing-4);
     }
 }
 
 @media (max-width: 480px) {
-    .login-container {
-        padding: var(--spacing-4) var(--spacing-3);
+    .login-section {
+        min-height: 40vh;
+        padding: var(--spacing-6) 0;
     }
-    
+
+    .login-container {
+        padding: 0 var(--spacing-3);
+    }
+
     .login-card {
         padding: var(--spacing-6);
     }
-    
+
     .login-title {
         font-size: var(--font-size-xl);
     }
-    
+
     .login-form .form-input {
         padding: var(--spacing-3);
     }
-    
+
     .login-form .btn-primary {
         padding: var(--spacing-3) var(--spacing-4);
         font-size: var(--font-size-base);
+    }
+
+    .analysis-section {
+        padding: var(--spacing-6) 0;
+    }
+
+    .analysis-container {
+        padding: 0 var(--spacing-3);
     }
 
     .params-container {

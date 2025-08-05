@@ -41,30 +41,41 @@ class LoginManager {
      * 等待配置加载完成
      */
     async waitForConfig() {
-        // Site Key已经硬编码，无需等待
-        if (!CONFIG.TURNSTILE.siteKey) {
-            throw new Error('Site Key未配置');
+        // 等待Site Key从API加载完成
+        let attempts = 0;
+        const maxAttempts = 50; // 最多等待5秒
+
+        while (!CONFIG.TURNSTILE.siteKey && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
         }
+
+        if (!CONFIG.TURNSTILE.siteKey) {
+            throw new Error('Site Key加载超时');
+        }
+
+        console.log('配置加载完成，Site Key:', CONFIG.TURNSTILE.siteKey);
     }
 
     /**
      * 初始化Turnstile验证
      */
     initTurnstile() {
-        const turnstileElement = document.querySelector('.cf-turnstile');
+        const turnstileElement = document.getElementById('turnstile-widget');
         if (!turnstileElement) {
             console.error('未找到Turnstile元素');
             return;
         }
 
-        // 设置site key
-        turnstileElement.setAttribute('data-sitekey', CONFIG.TURNSTILE.siteKey);
-        
+        console.log('找到Turnstile容器，准备渲染组件');
         console.log('Turnstile配置:', {
             siteKey: CONFIG.TURNSTILE.siteKey,
             theme: CONFIG.TURNSTILE.theme,
             size: CONFIG.TURNSTILE.size
         });
+
+        // 更新配置信息显示
+        this.updateConfigDisplay();
 
         // 等待Turnstile脚本加载
         this.waitForTurnstileScript().then(() => {
@@ -94,8 +105,21 @@ class LoginManager {
      */
     renderTurnstile() {
         try {
-            const turnstileElement = document.querySelector('.cf-turnstile');
-            
+            const turnstileElement = document.getElementById('turnstile-widget');
+
+            if (!turnstileElement) {
+                throw new Error('Turnstile容器元素未找到');
+            }
+
+            // 检查是否已经渲染过
+            if (this.turnstileWidgetId) {
+                console.log('Turnstile组件已存在，跳过渲染');
+                return;
+            }
+
+            // 清空容器内容，防止重复渲染
+            turnstileElement.innerHTML = '';
+
             this.turnstileWidgetId = window.turnstile.render(turnstileElement, {
                 sitekey: CONFIG.TURNSTILE.siteKey,
                 theme: CONFIG.TURNSTILE.theme,
@@ -104,7 +128,7 @@ class LoginManager {
                 'error-callback': (error) => this.onTurnstileError(error),
                 'expired-callback': () => this.onTurnstileExpired()
             });
-            
+
             console.log('Turnstile组件渲染成功，Widget ID:', this.turnstileWidgetId);
             this.updateTurnstileStatus('已加载', 'pending');
 
@@ -505,7 +529,7 @@ class LoginManager {
                 contentHtml += `
                     <div class="result-data">
                         <h4>🎯 登录响应数据:</h4>
-                        ${JSON.stringify(result.data, null, 2)}
+                        <div class="json-highlight">${Utils.highlightJSON(result.data)}</div>
                     </div>
                 `;
             }
@@ -514,7 +538,7 @@ class LoginManager {
                 contentHtml += `
                     <div class="result-data">
                         <h4>🔍 验证参数详情:</h4>
-                        ${JSON.stringify(result.verificationParams, null, 2)}
+                        <div class="json-highlight">${Utils.highlightJSON(result.verificationParams)}</div>
                     </div>
                 `;
             }

@@ -24,110 +24,109 @@
         </header>
 
         <main class="main">
-            <div class="login-container">
-                <div class="login-card">
-                    <div class="login-header">
-                        <h2 class="login-title">用户登录</h2>
-                        <p class="login-subtitle">请输入您的登录凭据</p>
-                    </div>
-
-                    <form id="loginForm" class="login-form" action="/api/login" method="POST">
-                        <div class="form-group">
-                            <label for="username" class="form-label">用户名</label>
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                class="form-input"
-                                placeholder="请输入用户名"
-                                value="admin"
-                                required
-                                autocomplete="username"
-                            >
-                            <div class="form-error" id="usernameError"></div>
+            <!-- 登录区域 - 上部分 -->
+            <section class="login-section">
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="login-header">
+                            <h2 class="login-title">用户登录</h2>
+                            <p class="login-subtitle">请输入您的登录凭据</p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="password" class="form-label">密码</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form-input"
-                                placeholder="请输入密码"
-                                value="password"
-                                required
-                                autocomplete="current-password"
-                            >
-                            <div class="form-error" id="passwordError"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">人机验证</label>
-                            <!-- Turnstile 验证组件 -->
-                            <div class="turnstile-container">
-                                <div 
-                                    class="cf-turnstile" 
-                                    data-sitekey=""
-                                    data-callback="onTurnstileSuccess"
-                                    data-error-callback="onTurnstileError"
-                                    data-expired-callback="onTurnstileExpired"
-                                    data-theme="light"
-                                    data-size="normal"
-                                ></div>
+                        <form id="loginForm" class="login-form" action="/api/login" method="POST">
+                            <div class="form-group">
+                                <label for="username" class="form-label">用户名</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    class="form-input"
+                                    placeholder="请输入用户名"
+                                    value="admin"
+                                    required
+                                    autocomplete="username"
+                                >
+                                <div class="form-error" id="usernameError"></div>
                             </div>
-                            <div class="form-error" id="turnstileError"></div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-full" id="loginButton">
-                                <span class="btn-text">登录</span>
-                                <span class="btn-loading" style="display: none;">
-                                    <span class="spinner"></span>
-                                    登录中...
-                                </span>
-                            </button>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <label for="password" class="form-label">密码</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-input"
+                                    placeholder="请输入密码"
+                                    value="password"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                                <div class="form-error" id="passwordError"></div>
+                            </div>
 
-                    <div class="login-footer">
-                        <div class="demo-info">
-                            <h4>演示账号（已自动填充）</h4>
-                            <p>用户名: <code>admin</code> ✅</p>
-                            <p>密码: <code>password</code> ✅</p>
-                            <p class="demo-tip">💡 专注体验Turnstile验证即可</p>
+                            <div class="form-group">
+                                <label class="form-label">人机验证</label>
+                                <!-- Turnstile 验证组件 -->
+                                <div class="turnstile-container">
+                                    <div id="turnstile-widget"></div>
+                                </div>
+                                <div class="form-error" id="turnstileError"></div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-full" id="loginButton">
+                                    <span class="btn-text">登录</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <span class="spinner"></span>
+                                        登录中...
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="login-footer">
+                            <div class="demo-info">
+                                <h4>演示账号（已自动填充）</h4>
+                                <p>用户名: <code>admin</code> ✅</p>
+                                <p>密码: <code>password</code> ✅</p>
+                                <p class="demo-tip">💡 专注体验Turnstile验证即可</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="login-info">
-                    <div class="info-card">
-                        <h3>关于 Turnstile</h3>
-                        <ul class="info-list">
-                            <li>✅ 无需点击图片验证</li>
-                            <li>✅ 更好的用户体验</li>
-                            <li>✅ 强大的安全防护</li>
-                            <li>✅ 支持多种主题</li>
-                        </ul>
-                    </div>
+            <!-- 分析信息区域 - 下部分 -->
+            <section class="analysis-section">
+                <div class="analysis-container">
+                    <div class="analysis-info">
+                        <div class="info-card">
+                            <h3>关于 Turnstile</h3>
+                            <ul class="info-list">
+                                <li>✅ 无需点击图片验证</li>
+                                <li>✅ 更好的用户体验</li>
+                                <li>✅ 强大的安全防护</li>
+                                <li>✅ 支持多种主题</li>
+                            </ul>
+                        </div>
 
-                    <div class="info-card">
-                        <h3>验证状态</h3>
-                        <div class="status-container">
-                            <div class="status-item">
-                                <span class="status-label">Turnstile状态:</span>
-                                <span class="status-value" id="turnstileStatus">未验证</span>
-                            </div>
-                            <div class="status-item">
-                                <span class="status-label">验证时间:</span>
-                                <span class="status-value" id="verifyTime">-</span>
-                            </div>
-                            <div class="status-item">
-                                <span class="status-label">Token:</span>
-                                <span class="status-value" id="tokenPreview">-</span>
+                        <div class="info-card">
+                            <h3>验证状态</h3>
+                            <div class="status-container">
+                                <div class="status-item">
+                                    <span class="status-label">Turnstile状态:</span>
+                                    <span class="status-value" id="turnstileStatus">未验证</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">验证时间:</span>
+                                    <span class="status-value" id="verifyTime">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Token:</span>
+                                    <span class="status-value" id="tokenPreview">-</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                     <div class="info-card">
                         <h3>验证参数详情（靶场分析）</h3>
@@ -288,7 +287,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- 结果模态框 -->
             <div id="resultModal" class="modal">
