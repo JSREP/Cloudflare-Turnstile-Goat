@@ -2,6 +2,28 @@
 
 本项目使用统一的配置系统，支持两种配置方式：
 
+## 快速开始
+
+### 开发环境
+1. **复制配置文件**：
+   ```bash
+   cp backend/config.yml.example backend/config.yml
+   ```
+
+2. **直接使用**：
+   - 配置文件已包含Cloudflare官方测试密钥
+   - 可以直接启动应用进行开发和测试
+   - 测试密钥在任何域名（包括localhost）都有效
+
+### 生产环境
+1. **获取真实密钥**：
+   - 访问 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+   - 创建Turnstile站点并获取真实密钥
+
+2. **配置方式**（二选一）：
+   - **方式一**：修改`backend/config.yml`文件中的密钥
+   - **方式二**：使用环境变量（推荐）
+
 ## 配置优先级
 
 1. **config.yml文件** (最高优先级)
