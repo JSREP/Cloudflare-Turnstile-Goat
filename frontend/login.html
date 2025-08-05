@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - Cloudflare Turnstile Goat</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/login.css">
+    <!-- 加载 Turnstile JS 脚本 -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🐐 Turnstile Goat</h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">首页</a>
+                    <a href="login.html" class="nav-link active">登录</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h2 class="login-title">用户登录</h2>
+                        <p class="login-subtitle">请输入您的登录凭据</p>
+                    </div>
+
+                    <form id="loginForm" class="login-form" action="/api/login" method="POST">
+                        <div class="form-group">
+                            <label for="username" class="form-label">用户名</label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                class="form-input" 
+                                placeholder="请输入用户名"
+                                required
+                                autocomplete="username"
+                            >
+                            <div class="form-error" id="usernameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="form-label">密码</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="请输入密码"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <div class="form-error" id="passwordError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">人机验证</label>
+                            <!-- Turnstile 验证组件 -->
+                            <div class="turnstile-container">
+                                <div 
+                                    class="cf-turnstile" 
+                                    data-sitekey=""
+                                    data-callback="onTurnstileSuccess"
+                                    data-error-callback="onTurnstileError"
+                                    data-expired-callback="onTurnstileExpired"
+                                    data-theme="light"
+                                    data-size="normal"
+                                ></div>
+                            </div>
+                            <div class="form-error" id="turnstileError"></div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-full" id="loginButton">
+                                <span class="btn-text">登录</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <span class="spinner"></span>
+                                    登录中...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="login-footer">
+                        <div class="demo-info">
+                            <h4>演示账号</h4>
+                            <p>用户名: <code>admin</code></p>
+                            <p>密码: <code>password</code></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login-info">
+                    <div class="info-card">
+                        <h3>关于 Turnstile</h3>
+                        <ul class="info-list">
+                            <li>✅ 无需点击图片验证</li>
+                            <li>✅ 更好的用户体验</li>
+                            <li>✅ 强大的安全防护</li>
+                            <li>✅ 支持多种主题</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>验证状态</h3>
+                        <div class="status-container">
+                            <div class="status-item">
+                                <span class="status-label">Turnstile状态:</span>
+                                <span class="status-value" id="turnstileStatus">未验证</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">验证时间:</span>
+                                <span class="status-value" id="verifyTime">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Token:</span>
+                                <span class="status-value" id="tokenPreview">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果模态框 -->
+            <div id="resultModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="modalTitle">登录结果</h3>
+                        <button class="modal-close" id="modalClose">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="result-content" id="resultContent">
+                            <!-- 结果内容将通过JavaScript动态填充 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" id="modalOk">确定</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    © 2024 Cloudflare Turnstile Goat. 
+                    本项目仅用于演示和学习目的。
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

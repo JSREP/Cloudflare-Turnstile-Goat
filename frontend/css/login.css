@@ -1,0 +1,316 @@
+/* 登录页面专用样式 - 遵循UI设计四原则 */
+
+/* 登录容器 - 亲密性原则：登录相关元素组合 */
+.login-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-8) var(--spacing-6);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-12);
+    align-items: start;
+    min-height: calc(100vh - 128px);
+}
+
+/* 登录卡片 - 对比原则：突出登录表单 */
+.login-card {
+    background-color: var(--white);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    padding: var(--spacing-10);
+    border: 1px solid var(--gray-200);
+    position: sticky;
+    top: var(--spacing-8);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-8);
+}
+
+.login-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: var(--spacing-3);
+}
+
+.login-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--gray-600);
+}
+
+/* 登录表单 - 对齐原则：统一的表单对齐 */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form .form-group {
+    margin-bottom: var(--spacing-5);
+}
+
+.login-form .form-input {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-base);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+.login-form .form-input:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), var(--shadow-md);
+}
+
+/* Turnstile容器 - 亲密性原则：验证组件独立区域 */
+.turnstile-container {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-4) 0;
+    background-color: var(--gray-50);
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--gray-200);
+    transition: all var(--transition-normal);
+}
+
+.turnstile-container:has(.cf-turnstile) {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* 登录按钮增强 */
+.login-form .btn-primary {
+    padding: var(--spacing-4) var(--spacing-6);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-form .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.login-form .btn-primary:active {
+    transform: translateY(0);
+}
+
+.login-form .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 登录页脚 - 演示信息 */
+.login-footer {
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-6);
+    border-top: 1px solid var(--gray-200);
+}
+
+.demo-info {
+    text-align: center;
+}
+
+.demo-info h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-3);
+}
+
+.demo-info p {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-1);
+}
+
+.demo-info code {
+    background-color: var(--gray-100);
+    color: var(--primary-color);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-weight: 600;
+}
+
+/* 登录信息面板 - 重复原则：统一的信息卡片样式 */
+.login-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.info-card {
+    background-color: var(--white);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: all var(--transition-normal);
+}
+
+.info-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.info-card h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.info-card h3::before {
+    content: "ℹ️";
+    font-size: var(--font-size-lg);
+}
+
+/* 信息列表 */
+.info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.info-list li {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) 0;
+}
+
+/* 结果内容样式 */
+.result-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.result-success {
+    color: var(--success-color);
+    background-color: rgba(16, 185, 129, 0.1);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--success-color);
+}
+
+.result-error {
+    color: var(--error-color);
+    background-color: rgba(239, 68, 68, 0.1);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--error-color);
+}
+
+.result-data {
+    background-color: var(--gray-50);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: var(--font-size-sm);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+/* 状态指示器增强 */
+.status-value.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-value.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.status-value.pending {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* 动画效果 */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading {
+    animation: pulse 2s infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .login-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-8);
+        max-width: 600px;
+    }
+    
+    .login-card {
+        position: static;
+    }
+    
+    .login-info {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: var(--spacing-6) var(--spacing-4);
+        gap: var(--spacing-6);
+    }
+    
+    .login-card {
+        padding: var(--spacing-8);
+        border-radius: var(--radius-xl);
+    }
+    
+    .login-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .info-card {
+        padding: var(--spacing-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: var(--spacing-4) var(--spacing-3);
+    }
+    
+    .login-card {
+        padding: var(--spacing-6);
+    }
+    
+    .login-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .login-form .form-input {
+        padding: var(--spacing-3);
+    }
+    
+    .login-form .btn-primary {
+        padding: var(--spacing-3) var(--spacing-4);
+        font-size: var(--font-size-base);
+    }
+}

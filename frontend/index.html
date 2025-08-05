@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Turnstile Goat - 首页</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">🐐 Turnstile Goat</h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link active">首页</a>
+                    <a href="login.html" class="nav-link">登录</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2 class="hero-title">Cloudflare Turnstile 验证演示</h2>
+                    <p class="hero-description">
+                        这是一个演示Cloudflare Turnstile人机验证功能的应用。
+                        Turnstile是Cloudflare推出的新一代验证码解决方案，
+                        提供更好的用户体验和安全性。
+                    </p>
+                    <div class="hero-actions">
+                        <a href="login.html" class="btn btn-primary">开始体验</a>
+                        <a href="#features" class="btn btn-secondary">了解更多</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="demo-card">
+                        <div class="demo-header">
+                            <span class="demo-dot red"></span>
+                            <span class="demo-dot yellow"></span>
+                            <span class="demo-dot green"></span>
+                        </div>
+                        <div class="demo-content">
+                            <div class="demo-form">
+                                <div class="demo-field">
+                                    <div class="demo-label"></div>
+                                    <div class="demo-input"></div>
+                                </div>
+                                <div class="demo-field">
+                                    <div class="demo-label"></div>
+                                    <div class="demo-input"></div>
+                                </div>
+                                <div class="demo-turnstile">
+                                    <div class="turnstile-placeholder">
+                                        <span class="checkmark">✓</span>
+                                        <span class="text">我不是机器人</span>
+                                    </div>
+                                </div>
+                                <div class="demo-button"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="features">
+                <div class="features-content">
+                    <h3 class="section-title">功能特点</h3>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <h4 class="feature-title">安全防护</h4>
+                            <p class="feature-description">
+                                有效防止机器人攻击、暴力破解等恶意行为，
+                                保护您的应用安全。
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4 class="feature-title">用户体验</h4>
+                            <p class="feature-description">
+                                无需点击图片或输入验证码，
+                                大多数情况下用户只需一次点击即可完成验证。
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <h4 class="feature-title">易于集成</h4>
+                            <p class="feature-description">
+                                简单的API接口，几行代码即可集成到您的应用中，
+                                支持多种编程语言。
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h4 class="feature-title">实时监控</h4>
+                            <p class="feature-description">
+                                提供详细的验证统计和分析数据，
+                                帮助您了解应用的安全状况。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="demo-section">
+                <div class="demo-content">
+                    <h3 class="section-title">在线演示</h3>
+                    <p class="section-description">
+                        点击下方按钮体验Turnstile验证流程，
+                        感受无缝的用户验证体验。
+                    </p>
+                    <div class="demo-actions">
+                        <a href="login.html" class="btn btn-primary btn-large">
+                            立即体验登录验证
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    © 2024 Cloudflare Turnstile Goat. 
+                    本项目仅用于演示和学习目的。
+                </p>
+                <div class="footer-links">
+                    <a href="https://developers.cloudflare.com/turnstile/" target="_blank" class="footer-link">
+                        Turnstile 文档
+                    </a>
+                    <a href="https://github.com" target="_blank" class="footer-link">
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
