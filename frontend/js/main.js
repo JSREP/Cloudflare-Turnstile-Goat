@@ -6,12 +6,11 @@
 const CONFIG = {
     API_BASE_URL: window.location.origin,
     ENDPOINTS: {
-        CONFIG: '/api/config',
         LOGIN: '/api/login',
         VERIFY: '/api/verify'
     },
     TURNSTILE: {
-        siteKey: null,
+        siteKey: '1x00000000000000000000AA',
         theme: 'light',
         size: 'normal'
     }
@@ -340,16 +339,12 @@ class App {
      * 加载应用配置
      */
     async loadConfig() {
-        try {
-            const config = await Utils.get(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.CONFIG}`);
-            CONFIG.TURNSTILE.siteKey = config.turnstile_site_key;
-            
-            console.log('配置加载成功:', config);
-        } catch (error) {
-            console.error('配置加载失败:', error);
-            // 使用默认配置
-            CONFIG.TURNSTILE.siteKey = '1x00000000000000000000AA';
-        }
+        // Site Key已经硬编码在CONFIG中，无需从API加载
+        console.log('配置已加载:', {
+            siteKey: CONFIG.TURNSTILE.siteKey,
+            theme: CONFIG.TURNSTILE.theme,
+            size: CONFIG.TURNSTILE.size
+        });
     }
 
     /**

@@ -41,16 +41,9 @@ class LoginManager {
      * 等待配置加载完成
      */
     async waitForConfig() {
-        let attempts = 0;
-        const maxAttempts = 50; // 5秒超时
-        
-        while (!CONFIG.TURNSTILE.siteKey && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-        }
-        
+        // Site Key已经硬编码，无需等待
         if (!CONFIG.TURNSTILE.siteKey) {
-            throw new Error('配置加载超时');
+            throw new Error('Site Key未配置');
         }
     }
 

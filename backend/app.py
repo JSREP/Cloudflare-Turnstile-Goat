@@ -50,18 +50,11 @@ def create_app(config_name=None):
             'version': '1.0.0',
             'endpoints': {
                 'login': '/api/login',
-                'verify': '/api/verify',
-                'config': '/api/config'
+                'verify': '/api/verify'
             }
         })
     
-    @app.route('/api/config')
-    def get_config():
-        """获取前端配置"""
-        return jsonify({
-            'turnstile_site_key': app.config['TURNSTILE_SITE_KEY'],
-            'debug': app.config['DEBUG']
-        })
+
     
     @app.route('/api/verify', methods=['POST'])
     def verify_turnstile():
