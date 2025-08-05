@@ -42,7 +42,7 @@ ENV FLASK_PORT=59623
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:59623/api/config || exit 1
+    CMD curl -f http://localhost:59623/ || exit 1
 
 # 启动命令
 CMD ["python", "backend/app.py"]

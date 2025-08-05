@@ -1,0 +1,244 @@
+name: Build and Push Docker Images
+
+on:
+  release:
+    types: [published]  # 当发布Release时触发
+  workflow_dispatch:  # 允许手动触发
+    inputs:
+      tag:
+        description: 'Tag to build (optional, defaults to latest)'
+        required: false
+        default: 'latest'
+
+env:
+  REGISTRY_GHCR: ghcr.io
+  REGISTRY_DOCKERHUB: docker.io
+  IMAGE_NAME: cloudflare-turnstile-goat
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # 用于签名
+      security-events: write  # 用于安全扫描结果上传
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_DOCKERHUB }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY_DOCKERHUB }}/jsreiroot/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+          labels: |
+            org.opencontainers.image.title=Cloudflare Turnstile Goat
+            org.opencontainers.image.description=A demonstration application for Cloudflare Turnstile integration
+            org.opencontainers.image.vendor=JSREP
+            org.opencontainers.image.licenses=MIT
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        id: build
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign container images
+        run: |
+          # 签名所有推送的镜像
+          echo "${{ steps.meta.outputs.tags }}" | while read tag; do
+            if [ ! -z "$tag" ]; then
+              echo "Signing $tag"
+              cosign sign --yes "$tag"
+            fi
+          done
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run container structure test
+        run: |
+          # 安装container-structure-test
+          curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+          
+          # 创建测试配置
+          cat > container-test.yaml << EOF
+          schemaVersion: 2.0.0
+          
+          commandTests:
+            - name: "Check Python version"
+              command: "python"
+              args: ["--version"]
+              expectedOutput: ["Python 3.11.*"]
+          
+          fileExistenceTests:
+            - name: "Check application files"
+              path: "/app/backend/app.py"
+              shouldExist: true
+            - name: "Check frontend files"
+              path: "/app/frontend/index.html"
+              shouldExist: true
+            - name: "Check config file"
+              path: "/app/backend/config.yml"
+              shouldExist: true
+          
+          metadataTest:
+            exposedPorts: ["59623"]
+            user: "appuser"
+            workdir: "/app"
+          EOF
+          
+          # 运行结构测试
+          container-structure-test test \
+            --image ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest \
+            --config container-test.yaml
+
+      - name: Test container functionality
+        run: |
+          # 启动容器进行功能测试
+          docker run -d --name test-container \
+            -p 8080:59623 \
+            -e FLASK_ENV=production \
+            -e TURNSTILE_SITE_KEY=1x00000000000000000000AA \
+            -e TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA \
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+          
+          # 等待容器启动
+          sleep 30
+          
+          # 测试健康检查
+          curl -f http://localhost:8080/ || exit 1
+          
+          # 测试登录API
+          curl -f -X POST http://localhost:8080/api/login \
+            -H "Content-Type: application/json" \
+            -d '{"username": "admin", "password": "password", "token": "test-token"}' || exit 1
+          
+          # 清理测试容器
+          docker stop test-container
+          docker rm test-container
+
+      - name: Generate build summary
+        run: |
+          echo "## 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Built Images" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" | while read tag; do
+            if [ ! -z "$tag" ]; then
+              echo "- \`$tag\`" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏗️ Build Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Platforms**: linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/s390x" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build ID**: ${{ steps.build.outputs.digest }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔐 Security" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Images signed with Cosign" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Vulnerability scan completed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ SBOM generated" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Provenance attestation included" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "## 🚀 Release $TAG_NAME" > release-notes.md
+          echo "" >> release-notes.md
+          echo "### 📦 Docker Images" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "${{ steps.meta.outputs.tags }}" | while read tag; do
+            if [ ! -z "$tag" ]; then
+              echo "- \`docker pull $tag\`" >> release-notes.md
+            fi
+          done
+          echo "" >> release-notes.md
+          echo "### 🏗️ Supported Architectures" >> release-notes.md
+          echo "- linux/amd64 (Intel/AMD 64位)" >> release-notes.md
+          echo "- linux/arm64 (ARM 64位 - Apple M1/M2, AWS Graviton等)" >> release-notes.md
+          echo "- linux/arm/v7 (ARM 32位 - 树莓派4等)" >> release-notes.md
+          echo "- linux/arm/v6 (ARM 32位 - 树莓派Zero等)" >> release-notes.md
+          echo "- linux/ppc64le (PowerPC 64位小端 - IBM Power系统)" >> release-notes.md
+          echo "- linux/s390x (IBM Z - IBM大型机架构)" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### 🔧 Usage" >> release-notes.md
+          echo "\`\`\`bash" >> release-notes.md
+          echo "docker run -d \\" >> release-notes.md
+          echo "  --name cloudflare-turnstile-goat \\" >> release-notes.md
+          echo "  --restart unless-stopped \\" >> release-notes.md
+          echo "  -p 59623:59623 \\" >> release-notes.md
+          echo "  -e TURNSTILE_SITE_KEY=your_site_key \\" >> release-notes.md
+          echo "  -e TURNSTILE_SECRET_KEY=your_secret_key \\" >> release-notes.md
+          echo "  ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:$TAG_NAME" >> release-notes.md
+          echo "\`\`\`" >> release-notes.md
+
+  notify:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify build status
+        run: |
+          if [ "${{ needs.build-and-push.result }}" == "success" ]; then
+            echo "✅ Docker images built and pushed successfully!"
+          else
+            echo "❌ Docker build failed!"
+            exit 1
+          fi
