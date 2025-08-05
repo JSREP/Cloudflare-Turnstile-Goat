@@ -46,7 +46,7 @@ class Config:
             self.TURNSTILE_SECRET_KEY = turnstile_config.get('secret_key') or os.environ.get('TURNSTILE_SECRET_KEY') or '1x0000000000000000000000000000000AA'
             self.TURNSTILE_VERIFY_URL = turnstile_config.get('verify_url') or 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
         else:
-            # 回退到环境变量
+            # 回退到环境变量，使用Cloudflare官方测试密钥作为默认值
             self.TURNSTILE_SITE_KEY = os.environ.get('TURNSTILE_SITE_KEY') or '1x00000000000000000000AA'
             self.TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY') or '1x0000000000000000000000000000000AA'
             self.TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'

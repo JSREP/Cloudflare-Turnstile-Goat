@@ -11,8 +11,7 @@ venv/
 env/
 ENV/
 
-# 环境变量文件（如果包含敏感信息）
-.env
+# 注意：本项目不使用.env文件，配置通过config.yml或环境变量传递
 
 # IDE文件
 .vscode/

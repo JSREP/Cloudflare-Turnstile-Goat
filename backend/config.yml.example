@@ -12,12 +12,14 @@ flask:
 # Cloudflare Turnstile配置
 turnstile:
   # 网站Site Key（可以公开）
-  # 从 https://dash.cloudflare.com/ 获取
-  site_key: your-turnstile-site-key-here
-  
+  # 以下是Cloudflare官方测试密钥，仅用于开发和演示
+  # 生产环境请从 https://dash.cloudflare.com/ 获取真实密钥
+  site_key: 1x00000000000000000000AA  # 测试密钥：总是通过验证（可见模式）
+
   # 网站Secret Key（敏感信息，不能公开）
-  # 从 https://dash.cloudflare.com/ 获取
-  secret_key: your-turnstile-secret-key-here
+  # 以下是Cloudflare官方测试密钥，仅用于开发和演示
+  # 生产环境请从 https://dash.cloudflare.com/ 获取真实密钥
+  secret_key: 1x0000000000000000000000000000000AA  # 测试密钥：总是通过验证
   
   # Cloudflare验证API URL（通常不需要修改）
   verify_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
@@ -45,6 +47,17 @@ security:
 
 # 使用说明：
 # 1. 复制此文件为 config.yml
-# 2. 替换所有 "your-xxx-here" 为真实的配置值
-# 3. 确保 config.yml 不被提交到版本控制系统
-# 4. 生产环境请使用强密钥和HTTPS
+# 2. 开发/测试环境：可以直接使用文件中的测试密钥
+# 3. 生产环境：必须替换为从 https://dash.cloudflare.com/ 获取的真实密钥
+# 4. 确保 config.yml 不被提交到版本控制系统
+# 5. 生产环境请使用强密钥和HTTPS
+#
+# 测试密钥说明：
+# - site_key: 1x00000000000000000000AA (总是通过验证，可见模式)
+# - secret_key: 1x0000000000000000000000000000000AA (总是通过验证)
+# - 这些测试密钥可以在任何域名使用，包括 localhost
+# - 测试密钥会产生 XXXX.DUMMY.TOKEN.XXXX 响应令牌
+#
+# 其他可用的测试密钥：
+# - 2x00000000000000000000AB / 2x0000000000000000000000000000000AA (总是阻止)
+# - 3x00000000000000000000FF / 3x0000000000000000000000000000000AA (强制交互式挑战)

@@ -29,6 +29,7 @@ venv/
 ENV/
 env/
 .venv/
+backend/venv/
 
 # IDE相关
 .vscode/
@@ -50,9 +51,7 @@ Thumbs.db
 backend/config.yml
 *.tar.gz
 deploy.sh
-.env
-.env.local
-.env.production
+# 注意：本项目不使用.env文件，配置通过环境变量传递
 
 # 文档和说明
 README.md

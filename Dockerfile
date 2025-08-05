@@ -17,8 +17,10 @@ RUN apt-get update && apt-get install -y \
 COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 复制应用代码
-COPY backend/ /app/backend/
+# 复制应用代码（排除敏感文件）
+COPY backend/*.py /app/backend/
+COPY backend/utils/ /app/backend/utils/
+COPY backend/config.yml.example /app/backend/
 COPY frontend/ /app/frontend/
 
 # 创建非root用户
