@@ -3,10 +3,6 @@
 # 敏感配置文件 - 包含真实的Secret Key，绝对不能提交
 backend/config.yml
 
-# 环境变量文件（如果包含敏感信息）
-backend/.env
-.env
-
 # Python相关
 __pycache__/
 *.py[cod]

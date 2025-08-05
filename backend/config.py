@@ -1,9 +1,5 @@
 import os
 import yaml
-from dotenv import load_dotenv
-
-# 加载环境变量
-load_dotenv()
 
 def load_yaml_config():
     """加载YAML配置文件"""
