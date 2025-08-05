@@ -18,7 +18,8 @@ def create_app(config_name=None):
     
     # 加载配置
     config_name = config_name or os.environ.get('FLASK_ENV', 'default')
-    app.config.from_object(config[config_name])
+    config_obj = config[config_name]()  # 实例化配置对象
+    app.config.from_object(config_obj)
     
     # 启用CORS
     CORS(app, origins=app.config['CORS_ORIGINS'])

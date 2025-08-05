@@ -1,0 +1,50 @@
+# Cloudflare Turnstile Goat 配置文件示例
+# 复制此文件为 config.yml 并填入真实的配置值
+
+# Flask应用配置
+flask:
+  env: development  # development 或 production
+  debug: true       # 开发环境设为true，生产环境设为false
+  host: 127.0.0.1   # 服务器监听地址
+  port: 5000        # 服务器监听端口
+  secret_key: your-secret-key-here  # Flask应用密钥，生产环境请使用强密钥
+
+# Cloudflare Turnstile配置
+turnstile:
+  # 网站Site Key（可以公开）
+  # 从 https://dash.cloudflare.com/ 获取
+  site_key: your-turnstile-site-key-here
+  
+  # 网站Secret Key（敏感信息，不能公开）
+  # 从 https://dash.cloudflare.com/ 获取
+  secret_key: your-turnstile-secret-key-here
+  
+  # Cloudflare验证API URL（通常不需要修改）
+  verify_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+
+# CORS配置
+cors:
+  origins:
+    - http://localhost:3000
+    - http://127.0.0.1:5000
+    - http://localhost:5000
+    # 生产环境请添加您的域名
+
+# 日志配置
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+# 安全配置
+security:
+  # 请求超时时间（秒）
+  request_timeout: 10
+  
+  # 最大重试次数
+  max_retries: 3
+
+# 使用说明：
+# 1. 复制此文件为 config.yml
+# 2. 替换所有 "your-xxx-here" 为真实的配置值
+# 3. 确保 config.yml 不被提交到版本控制系统
+# 4. 生产环境请使用强密钥和HTTPS

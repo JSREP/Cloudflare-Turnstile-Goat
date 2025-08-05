@@ -1,0 +1,95 @@
+# Cloudflare Turnstile Goat - Git忽略文件
+
+# 敏感配置文件 - 包含真实的Secret Key，绝对不能提交
+backend/config.yml
+
+# 环境变量文件（如果包含敏感信息）
+backend/.env
+.env
+
+# Python相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虚拟环境
+backend/venv/
+backend/env/
+backend/ENV/
+venv/
+env/
+ENV/
+
+# IDE和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# 测试覆盖率
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Node.js相关（如果将来添加前端构建工具）
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 部署相关
+*.pid
+*.seed
+*.pid.lock
+
+# 说明：
+# - backend/config.yml 包含真实的Cloudflare Secret Key，绝对不能提交
+# - backend/config.yml.example 是脱敏的示例文件，可以安全提交
+# - 如需修改配置，请复制 config.yml.example 为 config.yml 并填入真实值
