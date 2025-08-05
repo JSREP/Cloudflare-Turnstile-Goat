@@ -20,44 +20,59 @@ class Config:
     """应用配置类"""
 
     def __init__(self):
-        """初始化配置，优先使用YAML配置，然后是环境变量，最后是默认值"""
+        """初始化配置，优先使用环境变量，然后是YAML配置，最后是默认值"""
         self._load_config()
 
     def _load_config(self):
         """加载配置的内部方法"""
-        # Flask配置
-        if yaml_config and 'flask' in yaml_config:
-            flask_config = yaml_config['flask']
-            self.SECRET_KEY = flask_config.get('secret_key') or os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-            self.DEBUG = flask_config.get('debug', False) if flask_config.get('debug') is not None else (os.environ.get('FLASK_DEBUG', 'False').lower() == 'true')
-            self.HOST = flask_config.get('host') or os.environ.get('FLASK_HOST', '127.0.0.1')
-            self.PORT = int(flask_config.get('port') or os.environ.get('FLASK_PORT', 59623))
-        else:
-            # 回退到环境变量
-            self.SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-            self.DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
-            self.HOST = os.environ.get('FLASK_HOST', '127.0.0.1')
-            self.PORT = int(os.environ.get('FLASK_PORT', 59623))
+        # Flask配置 - 环境变量优先级最高
+        # 获取YAML配置作为回退值
+        flask_config = yaml_config.get('flask', {}) if yaml_config else {}
 
-        # Cloudflare Turnstile配置
-        if yaml_config and 'turnstile' in yaml_config:
-            turnstile_config = yaml_config['turnstile']
-            self.TURNSTILE_SITE_KEY = turnstile_config.get('site_key') or os.environ.get('TURNSTILE_SITE_KEY') or '1x00000000000000000000AA'
-            self.TURNSTILE_SECRET_KEY = turnstile_config.get('secret_key') or os.environ.get('TURNSTILE_SECRET_KEY') or '1x0000000000000000000000000000000AA'
-            self.TURNSTILE_VERIFY_URL = turnstile_config.get('verify_url') or 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
-        else:
-            # 回退到环境变量，使用Cloudflare官方测试密钥作为默认值
-            self.TURNSTILE_SITE_KEY = os.environ.get('TURNSTILE_SITE_KEY') or '1x00000000000000000000AA'
-            self.TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY') or '1x0000000000000000000000000000000AA'
-            self.TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        # 环境变量 > YAML配置 > 默认值
+        self.SECRET_KEY = os.environ.get('SECRET_KEY') or flask_config.get('secret_key') or 'dev-secret-key-change-in-production'
 
-        # CORS配置
-        if yaml_config and 'cors' in yaml_config and 'origins' in yaml_config['cors']:
-            self.CORS_ORIGINS = yaml_config['cors']['origins']
+        # DEBUG配置特殊处理
+        env_debug = os.environ.get('FLASK_DEBUG')
+        if env_debug is not None:
+            self.DEBUG = env_debug.lower() == 'true'
+        elif flask_config.get('debug') is not None:
+            self.DEBUG = flask_config.get('debug')
         else:
-            # 回退到环境变量
-            cors_origins = os.environ.get('CORS_ORIGINS', '*')
-            self.CORS_ORIGINS = cors_origins.split(',') if cors_origins != '*' else ['*']
+            self.DEBUG = False
+
+        self.HOST = os.environ.get('FLASK_HOST') or flask_config.get('host') or '127.0.0.1'
+
+        # PORT配置特殊处理（需要转换为整数）
+        env_port = os.environ.get('FLASK_PORT')
+        if env_port:
+            self.PORT = int(env_port)
+        elif flask_config.get('port'):
+            self.PORT = int(flask_config.get('port'))
+        else:
+            self.PORT = 59623
+
+        # Cloudflare Turnstile配置 - 环境变量优先级最高
+        # 获取YAML配置作为回退值
+        turnstile_config = yaml_config.get('turnstile', {}) if yaml_config else {}
+
+        # 环境变量 > YAML配置 > 默认值
+        self.TURNSTILE_SITE_KEY = os.environ.get('TURNSTILE_SITE_KEY') or turnstile_config.get('site_key') or '1x00000000000000000000AA'
+        self.TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY') or turnstile_config.get('secret_key') or '1x0000000000000000000000000000000AA'
+        self.TURNSTILE_VERIFY_URL = os.environ.get('TURNSTILE_VERIFY_URL') or turnstile_config.get('verify_url') or 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+
+        # CORS配置 - 环境变量优先级最高
+        # 获取YAML配置作为回退值
+        cors_config = yaml_config.get('cors', {}) if yaml_config else {}
+
+        # 环境变量 > YAML配置 > 默认值
+        env_cors_origins = os.environ.get('CORS_ORIGINS')
+        if env_cors_origins:
+            self.CORS_ORIGINS = env_cors_origins.split(',') if env_cors_origins != '*' else ['*']
+        elif cors_config.get('origins'):
+            self.CORS_ORIGINS = cors_config.get('origins')
+        else:
+            self.CORS_ORIGINS = ['*']
 
 class DevelopmentConfig(Config):
     """开发环境配置"""

@@ -23,6 +23,9 @@ COPY backend/utils/ /app/backend/utils/
 COPY backend/config.yml.example /app/backend/
 COPY frontend/ /app/frontend/
 
+# 创建config.yml文件（从example复制）
+RUN cp /app/backend/config.yml.example /app/backend/config.yml
+
 # 创建非root用户
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser

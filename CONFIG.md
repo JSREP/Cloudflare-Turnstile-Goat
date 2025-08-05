@@ -20,15 +20,15 @@
    - 访问 [Cloudflare Dashboard](https://dash.cloudflare.com/)
    - 创建Turnstile站点并获取真实密钥
 
-2. **配置方式**（二选一）：
-   - **方式一**：修改`backend/config.yml`文件中的密钥
-   - **方式二**：使用环境变量（推荐）
+2. **配置方式**（推荐使用环境变量）：
+   - **方式一**：使用环境变量（推荐，Docker部署必需）
+   - **方式二**：修改`backend/config.yml`文件中的密钥
 
 ## 配置优先级
 
-1. **config.yml文件** (最高优先级)
-2. **环境变量** (中等优先级)  
-3. **默认值** (最低优先级)
+1. **环境变量** (最高优先级) - Docker部署时使用
+2. **config.yml文件** (中等优先级) - 本地开发时使用
+3. **默认值** (最低优先级) - 系统回退值
 
 ## 配置方式
 
@@ -106,11 +106,32 @@ docker run -d \
 ### CORS配置
 - `CORS_ORIGINS`: 允许的跨域来源，多个用逗号分隔
 
+## Docker部署配置
+
+Docker部署时，环境变量会自动覆盖config.yml中的配置：
+
+```bash
+# 基本Docker运行（使用镜像内置的config.yml配置）
+docker run -p 59623:59623 jsreidockerhub/cloudflare-turnstile-goat:latest
+
+# 使用环境变量覆盖配置（推荐）
+docker run -p 59623:59623 \
+  -e TURNSTILE_SITE_KEY=your-real-site-key \
+  -e TURNSTILE_SECRET_KEY=your-real-secret-key \
+  -e CORS_ORIGINS=https://yourdomain.com \
+  jsreidockerhub/cloudflare-turnstile-goat:latest
+```
+
+### 配置覆盖机制
+- **环境变量优先级最高**：Docker运行时的-e参数会覆盖config.yml中的对应配置
+- **config.yml作为回退**：镜像内置config.yml提供默认配置
+- **灵活部署**：可以只覆盖需要的配置项，其他使用默认值
+
 ## 安全注意事项
 
 1. **config.yml文件包含敏感信息，已被.gitignore排除，不会提交到版本控制**
-2. **生产环境建议使用环境变量而不是config.yml文件**
-3. **Docker镜像中不包含任何敏感配置信息，所有配置在运行时传递**
+2. **Docker部署强烈建议使用环境变量传递真实密钥**
+3. **Docker镜像内置的config.yml只包含测试密钥，生产环境必须通过环境变量覆盖**
 4. **测试密钥仅用于开发和演示，生产环境必须使用真实密钥**
 
 ## 测试密钥
