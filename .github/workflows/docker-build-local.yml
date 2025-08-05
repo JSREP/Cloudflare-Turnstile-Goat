@@ -1,8 +1,6 @@
 name: Build Docker Images (Local Test)
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
     inputs:
       tag:
@@ -66,7 +64,7 @@ jobs:
             -e FLASK_ENV=production \
             -e TURNSTILE_SITE_KEY=1x00000000000000000000AA \
             -e TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA \
-            jsreiroot/${{ env.IMAGE_NAME }}:test-local
+            ${{ env.REGISTRY_DOCKERHUB }}/jsreiroot/${{ env.IMAGE_NAME }}:test-local
           
           # 等待容器启动
           sleep 15
