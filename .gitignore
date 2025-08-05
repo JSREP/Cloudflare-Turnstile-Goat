@@ -3,6 +3,11 @@
 # 敏感配置文件 - 包含真实的Secret Key，绝对不能提交
 backend/config.yml
 
+# 部署脚本 - 包含服务器信息和敏感配置，不应提交
+deploy.sh
+deploy/
+*.deploy
+
 # Python相关
 __pycache__/
 *.py[cod]

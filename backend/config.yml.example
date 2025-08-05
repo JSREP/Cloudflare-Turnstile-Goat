@@ -6,7 +6,7 @@ flask:
   env: development  # development 或 production
   debug: true       # 开发环境设为true，生产环境设为false
   host: 127.0.0.1   # 服务器监听地址
-  port: 5000        # 服务器监听端口
+  port: 52669        # 服务器监听端口
   secret_key: your-secret-key-here  # Flask应用密钥，生产环境请使用强密钥
 
 # Cloudflare Turnstile配置

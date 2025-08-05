@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 
 def create_app(config_name=None):
     """应用工厂函数"""
-    app = Flask(__name__)
+    # 设置静态文件目录为frontend
+    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+    app = Flask(__name__, static_folder=static_folder, static_url_path='')
     
     # 加载配置
     config_name = config_name or os.environ.get('FLASK_ENV', 'default')
@@ -32,7 +34,17 @@ def create_app(config_name=None):
     
     @app.route('/')
     def index():
-        """主页"""
+        """主页 - 服务前端页面"""
+        return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/login.html')
+    def login_page():
+        """登录页面"""
+        return send_from_directory(app.static_folder, 'login.html')
+
+    @app.route('/api')
+    def api_info():
+        """API信息"""
         return jsonify({
             'message': 'Cloudflare Turnstile Goat API',
             'version': '1.0.0',
