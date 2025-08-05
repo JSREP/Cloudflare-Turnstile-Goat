@@ -103,7 +103,22 @@ Thumbs.db
 *.tar.gz
 cloudflare-turnstile-goat.tar.gz
 
-# 说明：
+# 安全警告和说明：
 # - backend/config.yml 包含真实的Cloudflare Secret Key，绝对不能提交
 # - backend/config.yml.example 是脱敏的示例文件，可以安全提交
 # - 如需修改配置，请复制 config.yml.example 为 config.yml 并填入真实值
+#
+# 重要提醒：
+# - 任何包含真实密钥、服务器IP、域名的文件都不应提交
+# - 使用 git log -p | grep "敏感信息" 定期检查历史记录
+# - 如发现敏感信息泄露，立即使用 git filter-repo 清理历史记录
+
+# 敏感信息模式（防止意外提交）
+*secret*
+*password*
+*key*
+*.pem
+*.p12
+*.pfx
+*credential*
+*token*
