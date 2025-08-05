@@ -3,31 +3,90 @@
 /* 登录区域 - 亲密性原则：登录相关元素组合在上部 */
 .login-section {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    padding: var(--spacing-12) 0;
-    min-height: 60vh;
+    padding: var(--spacing-1) 0;
+    min-height: 8vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .login-container {
-    max-width: 500px;
+    max-width: 450px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 var(--spacing-6);
+    padding: 0 var(--spacing-4);
 }
 
 /* 登录卡片 - 对比原则：突出登录表单 */
 .login-card {
     background-color: var(--white);
-    border-radius: var(--radius-2xl);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    padding: var(--spacing-10);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-2);
     border: none;
     backdrop-filter: blur(10px);
     position: relative;
     transform: translateY(0);
     transition: all var(--transition-normal);
+}
+
+/* 登录内容区域 - 左右两侧布局 */
+.login-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-6);
+    align-items: start;
+    margin-top: var(--spacing-4);
+}
+
+/* 左侧登录表单区域 - 亲密性原则：表单元素组合 */
+.login-form-section {
+    padding: var(--spacing-4);
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 右侧演示信息区域 - 对比原则：辅助信息区域 */
+.login-info-section {
+    padding: var(--spacing-4);
+    background-color: var(--gray-50);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+/* 演示信息样式优化 */
+.demo-info h4 {
+    color: var(--gray-700);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--spacing-3);
+    text-align: center;
+}
+
+.demo-info p {
+    margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+}
+
+.demo-info code {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.demo-tip {
+    background-color: var(--warning-color);
+    color: var(--white);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 500;
+    margin-top: var(--spacing-3);
 }
 
 .login-card:hover {
@@ -37,19 +96,20 @@
 
 .login-header {
     text-align: center;
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-1);
 }
 
 .login-title {
-    font-size: var(--font-size-3xl);
-    font-weight: 700;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
     color: var(--gray-800);
-    margin-bottom: var(--spacing-3);
+    margin-bottom: 0;
 }
 
 .login-subtitle {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-xs);
     color: var(--gray-600);
+    margin-top: var(--spacing-05);
 }
 
 /* 登录表单 - 对齐原则：统一的表单对齐 */
@@ -59,13 +119,13 @@
 }
 
 .login-form .form-group {
-    margin-bottom: var(--spacing-5);
+    margin-bottom: var(--spacing-1);
 }
 
 .login-form .form-input {
-    padding: var(--spacing-4);
-    font-size: var(--font-size-base);
-    border-radius: var(--radius-lg);
+    padding: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-sm);
     transition: all var(--transition-normal);
 }
 
@@ -93,8 +153,8 @@
 
 /* 登录按钮增强 */
 .login-form .btn-primary {
-    padding: var(--spacing-4) var(--spacing-6);
-    font-size: var(--font-size-lg);
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     position: relative;
     overflow: hidden;
@@ -115,76 +175,40 @@
     transform: none;
 }
 
-/* 登录页脚 - 演示信息 */
-.login-footer {
-    margin-top: var(--spacing-8);
-    padding-top: var(--spacing-6);
-    border-top: 1px solid var(--gray-200);
-}
 
-.demo-info {
-    text-align: center;
-}
-
-.demo-info h4 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: var(--spacing-3);
-}
-
-.demo-info p {
-    font-size: var(--font-size-sm);
-    color: var(--gray-600);
-    margin-bottom: var(--spacing-1);
-}
-
-.demo-info code {
-    background-color: var(--gray-100);
-    color: var(--primary-color);
-    padding: var(--spacing-1) var(--spacing-2);
-    border-radius: var(--radius-sm);
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-weight: 600;
-}
-
-.demo-tip {
-    font-size: var(--font-size-sm);
-    color: var(--success-color);
-    margin-top: var(--spacing-3);
-    padding: var(--spacing-2) var(--spacing-3);
-    background-color: rgba(16, 185, 129, 0.1);
-    border-radius: var(--radius-md);
-    border-left: 3px solid var(--success-color);
-    font-weight: 500;
-}
 
 /* 分析区域 - 重复原则：统一的信息卡片样式 */
 .analysis-section {
     background-color: var(--gray-50);
-    padding: var(--spacing-12) 0;
-    min-height: 40vh;
+    padding: var(--spacing-4) 0;
+    min-height: auto;
 }
 
 .analysis-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-6);
+    padding: 0 var(--spacing-4);
 }
 
 .analysis-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: var(--spacing-6);
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: var(--spacing-2) !important;
+    width: 100% !important;
+    grid-auto-rows: min-content !important;
 }
 
 .info-card {
     background-color: var(--white);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-6);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--gray-200);
     transition: all var(--transition-normal);
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
 }
 
 .info-card:hover {
@@ -193,13 +217,13 @@
 }
 
 .info-card h3 {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--gray-800);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-2);
     display: flex;
     align-items: center;
-    gap: var(--spacing-2);
+    gap: var(--spacing-05);
 }
 
 .info-card h3::before {
@@ -296,24 +320,24 @@
 .params-container {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-6);
+    gap: var(--spacing-3);
 }
 
 .param-group {
     background-color: var(--gray-50);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
     border: 1px solid var(--gray-200);
 }
 
 .param-group h4 {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--gray-700);
-    margin-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-2);
     display: flex;
     align-items: center;
-    gap: var(--spacing-2);
+    gap: var(--spacing-1);
 }
 
 .param-item {
@@ -369,98 +393,201 @@
 /* 响应式设计 */
 @media (max-width: 1024px) {
     .login-section {
-        min-height: 50vh;
-        padding: var(--spacing-10) 0;
+        min-height: 6vh;
+        padding: var(--spacing-1) 0;
     }
 
     .analysis-info {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: var(--spacing-5);
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-2);
     }
 }
 
 @media (max-width: 768px) {
     .login-section {
-        min-height: 45vh;
-        padding: var(--spacing-8) 0;
+        min-height: 5vh;
+        padding: var(--spacing-1) 0;
     }
 
     .login-container {
-        padding: 0 var(--spacing-4);
+        padding: 0 var(--spacing-2);
     }
 
     .login-card {
-        padding: var(--spacing-8);
-        border-radius: var(--radius-xl);
+        padding: var(--spacing-1);
+        border-radius: var(--radius-sm);
     }
 
     .login-title {
-        font-size: var(--font-size-2xl);
+        font-size: var(--font-size-base);
     }
 
-    .analysis-section {
-        padding: var(--spacing-8) 0;
-    }
-
-    .analysis-info {
+    /* 移动端改为单列布局 */
+    .login-content {
         grid-template-columns: 1fr;
         gap: var(--spacing-4);
     }
 
+    .login-form-section,
+    .login-info-section {
+        padding: var(--spacing-3);
+    }
+
+    .analysis-section {
+        padding: var(--spacing-2) 0;
+    }
+
+    .analysis-info {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-1);
+    }
+
     .info-card {
-        padding: var(--spacing-4);
+        padding: var(--spacing-2);
     }
 }
 
 @media (max-width: 480px) {
     .login-section {
-        min-height: 40vh;
-        padding: var(--spacing-6) 0;
+        min-height: 4vh;
+        padding: var(--spacing-05) 0;
     }
 
     .login-container {
-        padding: 0 var(--spacing-3);
+        padding: 0 var(--spacing-1);
     }
 
     .login-card {
-        padding: var(--spacing-6);
+        padding: var(--spacing-1);
     }
 
     .login-title {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-sm);
+    }
+
+    /* 小屏幕优化 */
+    .login-content {
+        gap: var(--spacing-3);
+    }
+
+    .login-form-section,
+    .login-info-section {
+        padding: var(--spacing-2);
     }
 
     .login-form .form-input {
-        padding: var(--spacing-3);
+        padding: var(--spacing-1);
     }
 
     .login-form .btn-primary {
-        padding: var(--spacing-3) var(--spacing-4);
-        font-size: var(--font-size-base);
+        padding: var(--spacing-1) var(--spacing-2);
+        font-size: var(--font-size-xs);
     }
 
     .analysis-section {
-        padding: var(--spacing-6) 0;
+        padding: var(--spacing-1) 0;
     }
 
     .analysis-container {
-        padding: 0 var(--spacing-3);
+        padding: 0 var(--spacing-1);
+    }
+
+    .analysis-info {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-1);
     }
 
     .params-container {
-        gap: var(--spacing-4);
+        gap: var(--spacing-2);
     }
 
     .param-group {
-        padding: var(--spacing-3);
+        padding: var(--spacing-2);
     }
 
     .param-group h4 {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
     }
 
     .param-value.code-block {
         max-height: 80px;
         font-size: var(--font-size-xs);
     }
+}
+
+/* 测试Token警告样式 */
+.test-token-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 2px solid #ffc107;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
+    margin: var(--spacing-1) 0;
+}
+
+.test-token-warning .token-value {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: #856404;
+    background-color: rgba(255, 193, 7, 0.1);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-2);
+    word-break: break-all;
+}
+
+.test-token-warning .token-notice {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: #856404;
+    margin-bottom: var(--spacing-1);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.test-token-warning .token-explanation {
+    font-size: var(--font-size-xs);
+    color: #6c5700;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* Token类型样式 */
+.token-type-test {
+    background-color: #ffc107;
+    color: #856404;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.token-type-real {
+    background-color: #28a745;
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.token-type-unknown {
+    background-color: #6c757d;
+    color: white;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.token-type-explanation {
+    font-size: var(--font-size-xs);
+    color: var(--gray-600);
+    margin-top: var(--spacing-1);
+    line-height: 1.3;
+    font-style: italic;
 }

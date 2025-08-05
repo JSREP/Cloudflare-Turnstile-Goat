@@ -33,63 +33,69 @@
                             <p class="login-subtitle">请输入您的登录凭据</p>
                         </div>
 
-                        <form id="loginForm" class="login-form" action="/api/login" method="POST">
-                            <div class="form-group">
-                                <label for="username" class="form-label">用户名</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    class="form-input"
-                                    placeholder="请输入用户名"
-                                    value="admin"
-                                    required
-                                    autocomplete="username"
-                                >
-                                <div class="form-error" id="usernameError"></div>
+                        <div class="login-content">
+                            <!-- 左侧：登录表单区域 -->
+                            <div class="login-form-section">
+                                <form id="loginForm" class="login-form" action="/api/login" method="POST">
+                                    <div class="form-group">
+                                        <label for="username" class="form-label">用户名</label>
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            class="form-input"
+                                            placeholder="请输入用户名"
+                                            value="admin"
+                                            required
+                                            autocomplete="username"
+                                        >
+                                        <div class="form-error" id="usernameError"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password" class="form-label">密码</label>
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            class="form-input"
+                                            placeholder="请输入密码"
+                                            value="password"
+                                            required
+                                            autocomplete="current-password"
+                                        >
+                                        <div class="form-error" id="passwordError"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">人机验证</label>
+                                        <!-- Turnstile 验证组件 -->
+                                        <div class="turnstile-container">
+                                            <div id="turnstile-widget"></div>
+                                        </div>
+                                        <div class="form-error" id="turnstileError"></div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary btn-full" id="loginButton">
+                                            <span class="btn-text">登录</span>
+                                            <span class="btn-loading" style="display: none;">
+                                                <span class="spinner"></span>
+                                                登录中...
+                                            </span>
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div class="form-group">
-                                <label for="password" class="form-label">密码</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    class="form-input"
-                                    placeholder="请输入密码"
-                                    value="password"
-                                    required
-                                    autocomplete="current-password"
-                                >
-                                <div class="form-error" id="passwordError"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">人机验证</label>
-                                <!-- Turnstile 验证组件 -->
-                                <div class="turnstile-container">
-                                    <div id="turnstile-widget"></div>
+                            <!-- 右侧：演示信息区域 -->
+                            <div class="login-info-section">
+                                <div class="demo-info">
+                                    <h4>演示账号（已自动填充）</h4>
+                                    <p>用户名: <code>admin</code> ✅</p>
+                                    <p>密码: <code>password</code> ✅</p>
+                                    <p class="demo-tip">💡 专注体验Turnstile验证即可</p>
                                 </div>
-                                <div class="form-error" id="turnstileError"></div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary btn-full" id="loginButton">
-                                    <span class="btn-text">登录</span>
-                                    <span class="btn-loading" style="display: none;">
-                                        <span class="spinner"></span>
-                                        登录中...
-                                    </span>
-                                </button>
-                            </div>
-                        </form>
-
-                        <div class="login-footer">
-                            <div class="demo-info">
-                                <h4>演示账号（已自动填充）</h4>
-                                <p>用户名: <code>admin</code> ✅</p>
-                                <p>密码: <code>password</code> ✅</p>
-                                <p class="demo-tip">💡 专注体验Turnstile验证即可</p>
                             </div>
                         </div>
                     </div>
@@ -144,6 +150,10 @@
                                 <div class="param-item">
                                     <span class="param-label">Token前缀:</span>
                                     <span class="param-value" id="tokenPrefix">-</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">Token类型:</span>
+                                    <div class="param-value" id="tokenType">-</div>
                                 </div>
                             </div>
 
