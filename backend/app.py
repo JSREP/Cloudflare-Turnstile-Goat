@@ -101,7 +101,15 @@ def create_app(config_name=None):
                     'data': {
                         'challenge_ts': result.get('challenge_ts'),
                         'hostname': result.get('hostname'),
-                        'action': result.get('action')
+                        'action': result.get('action'),
+                        'cdata': result.get('cdata')
+                    },
+                    'debug_info': {
+                        'request_data': result.get('request_data'),
+                        'request_url': result.get('request_url'),
+                        'response_status': result.get('response_status'),
+                        'response_headers': result.get('response_headers'),
+                        'response_body': result.get('response_body')
                     }
                 })
             else:
@@ -109,7 +117,14 @@ def create_app(config_name=None):
                 return jsonify({
                     'success': False,
                     'error': result['error'],
-                    'error_codes': result.get('error_codes', [])
+                    'error_codes': result.get('error_codes', []),
+                    'debug_info': {
+                        'request_data': result.get('request_data'),
+                        'request_url': result.get('request_url'),
+                        'response_status': result.get('response_status'),
+                        'response_headers': result.get('response_headers'),
+                        'response_body': result.get('response_body')
+                    }
                 }), 403
                 
         except Exception as e:
@@ -162,7 +177,14 @@ def create_app(config_name=None):
                 return jsonify({
                     'success': False,
                     'error': f'人机验证失败: {result["error"]}',
-                    'error_codes': result.get('error_codes', [])
+                    'error_codes': result.get('error_codes', []),
+                    'debug_info': {
+                        'request_data': result.get('request_data'),
+                        'request_url': result.get('request_url'),
+                        'response_status': result.get('response_status'),
+                        'response_headers': result.get('response_headers'),
+                        'response_body': result.get('response_body')
+                    }
                 }), 403
             
             # Turnstile验证通过，进行业务逻辑验证
@@ -175,7 +197,18 @@ def create_app(config_name=None):
                     'data': {
                         'username': username,
                         'login_time': result.get('challenge_ts'),
-                        'session_id': 'demo-session-' + token[:10]
+                        'session_id': 'demo-session-' + token[:10],
+                        'challenge_ts': result.get('challenge_ts'),
+                        'hostname': result.get('hostname'),
+                        'action': result.get('action'),
+                        'cdata': result.get('cdata')
+                    },
+                    'debug_info': {
+                        'request_data': result.get('request_data'),
+                        'request_url': result.get('request_url'),
+                        'response_status': result.get('response_status'),
+                        'response_headers': result.get('response_headers'),
+                        'response_body': result.get('response_body')
                     }
                 })
             else:

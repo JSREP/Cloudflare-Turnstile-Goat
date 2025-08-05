@@ -47,24 +47,37 @@ class TurnstileVerifier:
             data['remoteip'] = remote_ip
         
         try:
-            # 发送验证请求
+            # 记录详细的请求信息
             logger.info(f"正在验证Turnstile token: {token[:20]}...")
+            logger.info(f"请求URL: {self.verify_url}")
+            logger.info(f"请求数据: {data}")
+            logger.info(f"请求头: Content-Type: application/x-www-form-urlencoded")
+
+            # 发送验证请求
             response = requests.post(
                 self.verify_url,
                 data=data,
                 timeout=10,
                 headers={'Content-Type': 'application/x-www-form-urlencoded'}
             )
-            
+
+            # 记录响应信息
+            logger.info(f"响应状态码: {response.status_code}")
+            logger.info(f"响应头: {dict(response.headers)}")
+            logger.info(f"响应内容: {response.text}")
+
             # 检查HTTP状态码
             if response.status_code != 200:
                 logger.error(f"Turnstile API返回错误状态码: {response.status_code}")
                 return {
                     'success': False,
                     'error': f'API请求失败，状态码: {response.status_code}',
-                    'error_codes': ['api-error']
+                    'error_codes': ['api-error'],
+                    'request_data': self._mask_sensitive_data(data),
+                    'response_status': response.status_code,
+                    'response_text': response.text
                 }
-            
+
             # 解析响应
             result = response.json()
             logger.info(f"Turnstile验证结果: {result}")
@@ -76,16 +89,28 @@ class TurnstileVerifier:
                     'challenge_ts': result.get('challenge_ts'),
                     'hostname': result.get('hostname'),
                     'action': result.get('action'),
-                    'cdata': result.get('cdata')
+                    'cdata': result.get('cdata'),
+                    # 调试信息
+                    'request_data': self._mask_sensitive_data(data),
+                    'request_url': self.verify_url,
+                    'response_status': response.status_code,
+                    'response_headers': dict(response.headers),
+                    'response_body': result
                 }
             else:
                 error_codes = result.get('error-codes', [])
                 error_message = self._get_error_message(error_codes)
-                
+
                 return {
                     'success': False,
                     'error': error_message,
-                    'error_codes': error_codes
+                    'error_codes': error_codes,
+                    # 调试信息
+                    'request_data': self._mask_sensitive_data(data),
+                    'request_url': self.verify_url,
+                    'response_status': response.status_code,
+                    'response_headers': dict(response.headers),
+                    'response_body': result
                 }
                 
         except requests.exceptions.Timeout:
@@ -149,3 +174,41 @@ class TurnstileVerifier:
             message += f' (错误代码: {", ".join(error_codes)})'
         
         return message
+
+    def _mask_sensitive_data(self, data: dict) -> dict:
+        """
+        遮蔽敏感数据（只遮蔽发送的敏感信息，不遮蔽返回的token）
+
+        Args:
+            data: 原始数据字典
+
+        Returns:
+            遮蔽敏感信息后的数据字典
+        """
+        if not isinstance(data, dict):
+            return data
+
+        masked_data = data.copy()
+        # 只遮蔽发送给Cloudflare的敏感密钥，不遮蔽返回的token或response
+        sensitive_keys = ['secret', 'password', 'api_key', 'private_key']
+
+        # 不遮蔽这些字段
+        allowed_keys = ['response', 'token', 'cf-turnstile-response', 'remoteip']
+
+        for key, value in masked_data.items():
+            key_lower = key.lower()
+
+            # 如果是允许的字段，不遮蔽
+            if any(allowed_key in key_lower for allowed_key in allowed_keys):
+                continue
+
+            # 只遮蔽敏感密钥
+            if any(sensitive_key in key_lower for sensitive_key in sensitive_keys):
+                if isinstance(value, str) and len(value) > 8:
+                    # 显示前4位和后4位，中间用*代替
+                    masked_data[key] = value[:4] + '*' * (len(value) - 8) + value[-4:]
+                elif isinstance(value, str) and len(value) > 0:
+                    # 短字符串全部用*代替
+                    masked_data[key] = '*' * len(value)
+
+        return masked_data

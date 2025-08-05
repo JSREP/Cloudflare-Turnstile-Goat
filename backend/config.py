@@ -31,13 +31,13 @@ class Config:
             self.SECRET_KEY = flask_config.get('secret_key') or os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
             self.DEBUG = flask_config.get('debug', False) if flask_config.get('debug') is not None else (os.environ.get('FLASK_DEBUG', 'False').lower() == 'true')
             self.HOST = flask_config.get('host') or os.environ.get('FLASK_HOST', '127.0.0.1')
-            self.PORT = int(flask_config.get('port') or os.environ.get('FLASK_PORT', 52669))
+            self.PORT = int(flask_config.get('port') or os.environ.get('FLASK_PORT', 59623))
         else:
             # 回退到环境变量
             self.SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
             self.DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
             self.HOST = os.environ.get('FLASK_HOST', '127.0.0.1')
-            self.PORT = int(os.environ.get('FLASK_PORT', 52669))
+            self.PORT = int(os.environ.get('FLASK_PORT', 59623))
 
         # Cloudflare Turnstile配置
         if yaml_config and 'turnstile' in yaml_config:

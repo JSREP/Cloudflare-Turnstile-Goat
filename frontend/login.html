@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/cloudflare-debug.css">
     <!-- 加载 Turnstile JS 脚本 -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
@@ -14,7 +15,7 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <h1 class="logo">🐐 Turnstile Goat</h1>
+                <a href="index.html" class="logo">🐐 Turnstile Goat</a>
                 <nav class="nav">
                     <a href="index.html" class="nav-link">首页</a>
                     <a href="login.html" class="nav-link active">登录（在线体验Cloudflare Turnstile）</a>
@@ -196,6 +197,92 @@
                                 <div class="param-item">
                                     <span class="param-label">组件大小:</span>
                                     <span class="param-value" id="widgetSize">normal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🔄 Cloudflare 交互详情</h3>
+                        <div class="cloudflare-interaction">
+                            <div class="interaction-group">
+                                <h4>📤 请求信息</h4>
+                                <div class="param-item">
+                                    <span class="param-label">请求URL:</span>
+                                    <div class="param-value code-block" id="requestUrl">-</div>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">请求方法:</span>
+                                    <span class="param-value" id="requestMethod">POST</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">请求数据:</span>
+                                    <div class="param-value">
+                                        <div class="code-tabs">
+                                            <button class="tab-btn active" data-tab="request-raw">原始数据</button>
+                                            <button class="tab-btn" data-tab="request-formatted">格式化</button>
+                                        </div>
+                                        <div class="tab-content active" id="request-raw">
+                                            <pre class="code-block" id="requestDataRaw">-</pre>
+                                        </div>
+                                        <div class="tab-content" id="request-formatted">
+                                            <pre class="code-block" id="requestDataFormatted">-</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="interaction-group">
+                                <h4>📥 响应信息</h4>
+                                <div class="param-item">
+                                    <span class="param-label">响应状态:</span>
+                                    <span class="param-value status-code" id="responseStatus">-</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">响应头:</span>
+                                    <div class="param-value">
+                                        <div class="code-tabs">
+                                            <button class="tab-btn active" data-tab="headers-raw">原始头</button>
+                                            <button class="tab-btn" data-tab="headers-formatted">格式化</button>
+                                        </div>
+                                        <div class="tab-content active" id="headers-raw">
+                                            <pre class="code-block" id="responseHeadersRaw">-</pre>
+                                        </div>
+                                        <div class="tab-content" id="headers-formatted">
+                                            <pre class="code-block" id="responseHeadersFormatted">-</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">响应体:</span>
+                                    <div class="param-value">
+                                        <div class="code-tabs">
+                                            <button class="tab-btn active" data-tab="response-raw">原始响应</button>
+                                            <button class="tab-btn" data-tab="response-formatted">格式化</button>
+                                        </div>
+                                        <div class="tab-content active" id="response-raw">
+                                            <pre class="code-block" id="responseBodyRaw">-</pre>
+                                        </div>
+                                        <div class="tab-content" id="response-formatted">
+                                            <pre class="code-block" id="responseBodyFormatted">-</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="interaction-group">
+                                <h4>⏱️ 时间信息</h4>
+                                <div class="param-item">
+                                    <span class="param-label">请求时间:</span>
+                                    <span class="param-value" id="requestTime">-</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">响应时间:</span>
+                                    <span class="param-value" id="responseTime">-</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-label">耗时:</span>
+                                    <span class="param-value" id="requestDuration">-</span>
                                 </div>
                             </div>
                         </div>

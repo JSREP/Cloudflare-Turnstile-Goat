@@ -127,6 +127,11 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .nav {

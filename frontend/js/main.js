@@ -325,7 +325,10 @@ class App {
             
             // 初始化事件监听
             this.initEventListeners();
-            
+
+            // 初始化动画
+            this.initAnimations();
+
             console.log('应用初始化完成');
         } catch (error) {
             console.error('应用初始化失败:', error);
@@ -379,16 +382,100 @@ class App {
     updateActiveNavigation() {
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll('.nav-link');
-        
+
         navLinks.forEach(link => {
             const href = link.getAttribute('href');
-            if (href === currentPath || 
+            if (href === currentPath ||
                 (currentPath === '/' && href === 'index.html') ||
                 (currentPath.includes('login') && href === 'login.html')) {
                 link.classList.add('active');
             } else {
                 link.classList.remove('active');
             }
+        });
+    }
+
+    /**
+     * 初始化动画
+     */
+    initAnimations() {
+        // 初始化滚动观察器
+        this.initScrollObserver();
+
+        // 初始化Feature卡片动画
+        this.initFeatureCardsAnimation();
+
+        console.log('动画系统初始化完成');
+    }
+
+    /**
+     * 初始化滚动观察器
+     */
+    initScrollObserver() {
+        // 检查浏览器是否支持Intersection Observer
+        if (!('IntersectionObserver' in window)) {
+            // 如果不支持，直接显示所有元素
+            document.querySelectorAll('.scroll-animate').forEach(el => {
+                el.classList.add('animate-in');
+            });
+            return;
+        }
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    // 一次性动画，观察后即可停止观察
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有需要滚动动画的元素
+        document.querySelectorAll('.scroll-animate').forEach(el => {
+            observer.observe(el);
+        });
+    }
+
+    /**
+     * 初始化Feature卡片动画
+     */
+    initFeatureCardsAnimation() {
+        const featureCards = document.querySelectorAll('.feature-card');
+
+        if (featureCards.length === 0) return;
+
+        // 检查浏览器是否支持Intersection Observer
+        if (!('IntersectionObserver' in window)) {
+            // 如果不支持，直接显示所有卡片
+            featureCards.forEach(card => {
+                card.classList.add('animate-in');
+            });
+            return;
+        }
+
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -30px 0px'
+        };
+
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    cardObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有Feature卡片
+        featureCards.forEach(card => {
+            cardObserver.observe(card);
         });
     }
 }

@@ -245,6 +245,11 @@ class LoginManager {
                 this.updateVerificationParams(this.turnstileToken, result.data);
             }
 
+            // 更新Cloudflare交互信息
+            if (result.debug_info) {
+                this.updateCloudflareInteraction(result.debug_info);
+            }
+
             // 显示成功结果
             this.showResult({
                 success: true,
@@ -263,7 +268,12 @@ class LoginManager {
 
         } catch (error) {
             console.error('登录失败:', error);
-            
+
+            // 更新Cloudflare交互信息（如果有调试信息）
+            if (error.debug_info) {
+                this.updateCloudflareInteraction(error.debug_info);
+            }
+
             // 显示错误结果
             this.showResult({
                 success: false,
@@ -568,6 +578,224 @@ class LoginManager {
             if (e.key === 'Escape' && modal.classList.contains('show')) {
                 modal.classList.remove('show');
             }
+        });
+    }
+
+    /**
+     * 更新Cloudflare交互信息
+     */
+    updateCloudflareInteraction(debugInfo) {
+        if (!debugInfo) return;
+
+        console.log('更新Cloudflare交互信息:', debugInfo);
+
+        // 更新请求信息
+        this.updateRequestInfo(debugInfo);
+
+        // 更新响应信息
+        this.updateResponseInfo(debugInfo);
+
+        // 更新时间信息
+        this.updateTimingInfo(debugInfo);
+
+        // 初始化标签页切换
+        this.initTabSwitching();
+    }
+
+    /**
+     * 更新请求信息
+     */
+    updateRequestInfo(debugInfo) {
+        // 请求URL
+        const requestUrlElement = document.getElementById('requestUrl');
+        if (requestUrlElement && debugInfo.request_url) {
+            requestUrlElement.textContent = debugInfo.request_url;
+        }
+
+        // 请求数据
+        if (debugInfo.request_data) {
+            // 原始数据
+            const requestDataRawElement = document.getElementById('requestDataRaw');
+            if (requestDataRawElement) {
+                requestDataRawElement.textContent = this.formatRequestData(debugInfo.request_data);
+            }
+
+            // 格式化数据
+            const requestDataFormattedElement = document.getElementById('requestDataFormatted');
+            if (requestDataFormattedElement) {
+                requestDataFormattedElement.innerHTML = this.formatRequestDataFormatted(debugInfo.request_data);
+            }
+        }
+    }
+
+    /**
+     * 更新响应信息
+     */
+    updateResponseInfo(debugInfo) {
+        // 响应状态
+        const responseStatusElement = document.getElementById('responseStatus');
+        if (responseStatusElement && debugInfo.response_status) {
+            responseStatusElement.textContent = debugInfo.response_status;
+            responseStatusElement.setAttribute('data-status', debugInfo.response_status);
+        }
+
+        // 响应头
+        if (debugInfo.response_headers) {
+            // 原始响应头
+            const responseHeadersRawElement = document.getElementById('responseHeadersRaw');
+            if (responseHeadersRawElement) {
+                responseHeadersRawElement.textContent = JSON.stringify(debugInfo.response_headers, null, 2);
+            }
+
+            // 格式化响应头
+            const responseHeadersFormattedElement = document.getElementById('responseHeadersFormatted');
+            if (responseHeadersFormattedElement) {
+                responseHeadersFormattedElement.innerHTML = this.formatHeaders(debugInfo.response_headers);
+            }
+        }
+
+        // 响应体
+        if (debugInfo.response_body) {
+            // 原始响应体
+            const responseBodyRawElement = document.getElementById('responseBodyRaw');
+            if (responseBodyRawElement) {
+                responseBodyRawElement.textContent = JSON.stringify(debugInfo.response_body, null, 2);
+            }
+
+            // 格式化响应体
+            const responseBodyFormattedElement = document.getElementById('responseBodyFormatted');
+            if (responseBodyFormattedElement) {
+                responseBodyFormattedElement.innerHTML = this.formatJSON(debugInfo.response_body);
+            }
+        }
+    }
+
+    /**
+     * 更新时间信息
+     */
+    updateTimingInfo(debugInfo) {
+        const now = new Date().toISOString();
+
+        // 请求时间
+        const requestTimeElement = document.getElementById('requestTime');
+        if (requestTimeElement) {
+            requestTimeElement.textContent = Utils.formatTimestamp(now);
+        }
+
+        // 响应时间
+        const responseTimeElement = document.getElementById('responseTime');
+        if (responseTimeElement) {
+            responseTimeElement.textContent = Utils.formatTimestamp(now);
+        }
+
+        // 耗时（这里简化处理，实际应该记录真实的请求耗时）
+        const requestDurationElement = document.getElementById('requestDuration');
+        if (requestDurationElement) {
+            requestDurationElement.textContent = '< 1000ms';
+        }
+    }
+
+    /**
+     * 格式化请求数据
+     */
+    formatRequestData(requestData) {
+        if (typeof requestData === 'object') {
+            return Object.entries(requestData)
+                .map(([key, value]) => `${key}=${encodeURIComponent(this.maskSensitiveData(key, value))}`)
+                .join('&');
+        }
+        return String(requestData);
+    }
+
+    /**
+     * 格式化请求数据（带高亮）
+     */
+    formatRequestDataFormatted(requestData) {
+        if (typeof requestData === 'object') {
+            return Object.entries(requestData)
+                .map(([key, value]) => {
+                    const maskedValue = this.maskSensitiveData(key, value);
+                    const encodedValue = encodeURIComponent(maskedValue);
+                    return `<span class="json-key">${key}</span>=<span class="json-string">${encodedValue}</span>`;
+                })
+                .join('&<br>');
+        }
+        return `<span class="json-string">${String(requestData)}</span>`;
+    }
+
+    /**
+     * 遮蔽敏感数据（只遮蔽发送的敏感信息，不遮蔽返回的token）
+     */
+    maskSensitiveData(key, value) {
+        // 只遮蔽发送给服务器的敏感密钥，不遮蔽返回的token或response
+        const sensitiveKeys = ['secret', 'password', 'api_key', 'private_key'];
+        const keyLower = key.toLowerCase();
+
+        // 不遮蔽这些返回的字段
+        const allowedKeys = ['response', 'token', 'cf-turnstile-response'];
+        if (allowedKeys.some(allowedKey => keyLower.includes(allowedKey))) {
+            return value;
+        }
+
+        if (sensitiveKeys.some(sensitiveKey => keyLower.includes(sensitiveKey))) {
+            if (typeof value === 'string' && value.length > 8) {
+                // 显示前4位和后4位，中间用*代替
+                return value.substring(0, 4) + '*'.repeat(value.length - 8) + value.substring(value.length - 4);
+            } else if (typeof value === 'string' && value.length > 0) {
+                // 短字符串全部用*代替
+                return '*'.repeat(value.length);
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * 格式化响应头
+     */
+    formatHeaders(headers) {
+        return Object.entries(headers)
+            .map(([key, value]) => {
+                return `<span class="json-key">${key}</span>: <span class="json-string">${value}</span>`;
+            })
+            .join('<br>');
+    }
+
+    /**
+     * 格式化JSON
+     */
+    formatJSON(obj) {
+        const json = JSON.stringify(obj, null, 2);
+        return json
+            .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+            .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+            .replace(/: (\d+)/g, ': <span class="json-number">$1</span>')
+            .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+            .replace(/: null/g, ': <span class="json-null">null</span>');
+    }
+
+    /**
+     * 初始化标签页切换
+     */
+    initTabSwitching() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                const tabGroup = button.closest('.param-value');
+
+                // 移除所有活动状态
+                tabGroup.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                tabGroup.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // 添加当前活动状态
+                button.classList.add('active');
+                const targetContent = tabGroup.querySelector(`#${tabId}`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
         });
     }
 }
