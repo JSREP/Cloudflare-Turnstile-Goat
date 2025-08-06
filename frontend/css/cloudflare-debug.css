@@ -42,6 +42,40 @@
     color: var(--gray-600);
 }
 
+/* 时间信息特殊样式 - 应用对比原则 */
+.param-value.time-value {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: var(--font-size-sm);
+    background: var(--gray-50);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    color: var(--gray-800);
+}
+
+/* 请求URL样式 - 应用重复原则 */
+.param-value.url-value {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: var(--font-size-xs);
+    word-break: break-all;
+    background: var(--primary-light);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* 持续时间高亮 - 应用对比原则 */
+.param-value.duration-value {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-weight: 600;
+    color: var(--success-color);
+    background: #f0fdf4;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--success-color);
+}
+
 .code-block {
     background: var(--gray-900);
     color: var(--gray-100);

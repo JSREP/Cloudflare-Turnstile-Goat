@@ -7,7 +7,13 @@ class LoginManager {
         this.turnstileToken = null;
         this.turnstileWidgetId = null;
         this.isSubmitting = false;
-        
+
+        // 时间记录
+        this.requestStartTime = null;
+        this.requestEndTime = null;
+        this.requestTimestamp = null;
+        this.responseTimestamp = null;
+
         this.init();
     }
 
@@ -261,8 +267,16 @@ class LoginManager {
 
             console.log('提交登录数据:', { ...loginData, token: Utils.truncateText(loginData.token) });
 
+            // 记录请求开始时间
+            this.requestStartTime = performance.now();
+            this.requestTimestamp = new Date();
+
             // 发送登录请求
             const result = await Utils.post(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.LOGIN}`, loginData);
+
+            // 记录请求结束时间
+            this.requestEndTime = performance.now();
+            this.responseTimestamp = new Date();
             
             console.log('登录成功:', result);
 
@@ -294,6 +308,12 @@ class LoginManager {
 
         } catch (error) {
             console.error('登录失败:', error);
+
+            // 记录错误响应时间
+            if (this.requestStartTime) {
+                this.requestEndTime = performance.now();
+                this.responseTimestamp = new Date();
+            }
 
             // 更新Cloudflare交互信息（如果有调试信息）
             if (error.debug_info) {
@@ -756,8 +776,14 @@ class LoginManager {
     updateRequestInfo(debugInfo) {
         // 请求URL
         const requestUrlElement = document.getElementById('requestUrl');
-        if (requestUrlElement && debugInfo.request_url) {
-            requestUrlElement.textContent = debugInfo.request_url;
+        if (requestUrlElement) {
+            if (debugInfo.request_url) {
+                requestUrlElement.textContent = debugInfo.request_url;
+                requestUrlElement.classList.add('url-value');
+            } else {
+                requestUrlElement.textContent = '-';
+                requestUrlElement.classList.remove('url-value');
+            }
         }
 
         // 请求数据
@@ -822,24 +848,23 @@ class LoginManager {
      * 更新时间信息
      */
     updateTimingInfo(debugInfo) {
-        const now = new Date().toISOString();
-
         // 请求时间
         const requestTimeElement = document.getElementById('requestTime');
-        if (requestTimeElement) {
-            requestTimeElement.textContent = Utils.formatTimestamp(now);
+        if (requestTimeElement && this.requestTimestamp) {
+            requestTimeElement.textContent = this.formatDetailedTimestamp(this.requestTimestamp);
         }
 
         // 响应时间
         const responseTimeElement = document.getElementById('responseTime');
-        if (responseTimeElement) {
-            responseTimeElement.textContent = Utils.formatTimestamp(now);
+        if (responseTimeElement && this.responseTimestamp) {
+            responseTimeElement.textContent = this.formatDetailedTimestamp(this.responseTimestamp);
         }
 
-        // 耗时（这里简化处理，实际应该记录真实的请求耗时）
+        // 耗时
         const requestDurationElement = document.getElementById('requestDuration');
-        if (requestDurationElement) {
-            requestDurationElement.textContent = '< 1000ms';
+        if (requestDurationElement && this.requestStartTime && this.requestEndTime) {
+            const duration = this.requestEndTime - this.requestStartTime;
+            requestDurationElement.textContent = this.formatDuration(duration);
         }
     }
 
@@ -945,6 +970,42 @@ class LoginManager {
                 }
             });
         });
+    }
+
+    /**
+     * 格式化详细时间戳（包含毫秒）
+     */
+    formatDetailedTimestamp(date) {
+        if (!date) return '-';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+    }
+
+    /**
+     * 格式化持续时间
+     */
+    formatDuration(milliseconds) {
+        if (typeof milliseconds !== 'number' || milliseconds < 0) {
+            return '-';
+        }
+
+        if (milliseconds < 1000) {
+            return `${Math.round(milliseconds)}ms`;
+        } else if (milliseconds < 60000) {
+            return `${(milliseconds / 1000).toFixed(2)}s`;
+        } else {
+            const minutes = Math.floor(milliseconds / 60000);
+            const seconds = ((milliseconds % 60000) / 1000).toFixed(2);
+            return `${minutes}m ${seconds}s`;
+        }
     }
 }
 
