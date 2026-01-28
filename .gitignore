@@ -86,13 +86,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # 系统文件
-.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db
 
 # 部署相关
 *.pid
@@ -126,3 +124,24 @@ cloudflare-turnstile-goat.tar.gz
 # GitHub Actions本地测试文件（包含敏感信息）
 .secrets
 .actrc
+
+# Build outputs
+out/
+target/
+
+# Logs
+
+# OS generated files
+
+# IDE specific files
+.vs/
+
+# Python specific
+
+# Node.js specific
+
+# Environment variables
+
+# Temporary files
+.tmp
+.temp
